@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountController {
   private final AccountService accountService;
 
-  @Autowired // <-- deviation
+  @Autowired
   public AccountController(AccountService accountService) {
     this.accountService = accountService;
   }

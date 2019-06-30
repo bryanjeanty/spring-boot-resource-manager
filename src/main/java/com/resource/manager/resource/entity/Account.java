@@ -32,17 +32,17 @@ public class Account implements Serializable {
 
   @NotBlank
   @JsonProperty("username")
-  @Column(name = "Username", length = 50)
+  @Column(name = "Username", length = 50, nullable = false)
   private String username;
 
   @NotBlank
   @JsonProperty("email")
-  @Column(name = "Email", length = 100)
+  @Column(name = "Email", length = 100, nullable = false)
   private String email;
 
   @NotBlank
   @JsonProperty("password")
-  @Column(name = "Password", length = 255)
+  @Column(name = "Password", length = 255, nullable = false)
   private String password;
 
   @Column(name = "CreatedAt", nullable = false, updatable = false)

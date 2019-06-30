@@ -26,10 +26,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class })
-@EnableJpaRepositories(basePackages = "com.example.demo")
+@EnableJpaRepositories(basePackages = "com.resource.manager.resource.repository")
 @EnableTransactionManagement
-@ComponentScan(basePackages = { "com.example.demo" })
-@EntityScan("com.example.demo")
+@ComponentScan(basePackages = { "com.resource.manager.resource" })
+@EntityScan("com.resource.manager.resource")
 public class Main {
 	private static HikariDataSource hds;
 
@@ -67,7 +67,7 @@ public class Main {
 		return adapter;
 	}
 
-	@Bean
+	@Bean(name = "entityManagerFactory")
 	public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(DataSource dataSource,
 			JpaVendorAdapter jpaVendorAdapter) {
 		LocalContainerEntityManagerFactoryBean emBean = new LocalContainerEntityManagerFactoryBean();
