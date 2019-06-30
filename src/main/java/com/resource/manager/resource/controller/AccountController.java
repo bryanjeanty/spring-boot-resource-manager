@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.resource.manager.resource.entity.Account;
+import com.resource.manager.resource.exception.AccountWithIdNotFoundException;
 import com.resource.manager.resource.service.AccountService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,13 +44,14 @@ public class AccountController {
 
   @GetMapping("/accounts/{id}")
   public Account getAccountById(@PathVariable("id") int accountId) {
-    return accountService.findById(accountId).orElse(null);
+    return accountService.findById(accountId).orElseThrow(() -> new AccountWithIdNotFoundException(accountId));
   }
 
   @PutMapping("/accounts/{id}")
   public ResponseEntity<String> updateAccountById(@PathVariable("id") int accountId,
       @Valid @NotNull @RequestBody Account updates) {
-    Account updatedAccount = accountService.findById(accountId).orElse(null);
+    Account updatedAccount = accountService.findById(accountId)
+        .orElseThrow(() -> new AccountWithIdNotFoundException(accountId));
     updatedAccount.setUsername(updates.getUsername());
     updatedAccount.setEmail(updates.getEmail());
     updatedAccount.setPassword(updates.getPassword());
@@ -60,7 +62,8 @@ public class AccountController {
 
   @DeleteMapping("/accounts/{id}")
   public ResponseEntity<String> deleteAccountById(@PathVariable("id") int accountId) {
-    Account account = accountService.findById(accountId).orElse(null);
+    Account account = accountService.findById(accountId)
+        .orElseThrow(() -> new AccountWithIdNotFoundException(accountId));
     accountService.delete(account);
     return new ResponseEntity<>("Account successfully deleted", HttpStatus.NO_CONTENT);
   }
