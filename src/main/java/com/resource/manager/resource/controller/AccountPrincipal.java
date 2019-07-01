@@ -14,9 +14,9 @@ public class AccountPrincipal implements UserDetails {
 
     public AccountPrincipal(Account account) {
         this.account = account;
-	}
+    }
 
-	@Override
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
     }
@@ -50,5 +50,4 @@ public class AccountPrincipal implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-    
 }

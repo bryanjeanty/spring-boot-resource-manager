@@ -1,5 +1,8 @@
 package com.resource.manager.resource.config;
 
+import com.resource.manager.resource.repository.AccountRepository;
+import com.resource.manager.resource.repository.JwtAuthenticationFilter;
+import com.resource.manager.resource.repository.JwtAuthorizationFilter;
 import com.resource.manager.resource.service.AccountDetailsService;
 
 import org.springframework.context.annotation.Bean;
@@ -9,17 +12,19 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private AccountDetailsService accountDetailsService;
+    private AccountRepository accountRepository;
 
-    public SecurityConfiguration(AccountDetailsService accountDetailsService) {
+    public SecurityConfiguration(AccountDetailsService accountDetailsService, AccountRepository accountRepository) {
         this.accountDetailsService = accountDetailsService;
+        this.accountRepository = accountRepository;
     }
 
     @Override
@@ -30,12 +35,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // Allow only authorized users to make requests
-        // to other pages using form based authentication
-        // using login page
-        http.authorizeRequests().antMatchers("/resource/**").authenticated().antMatchers("/api/**").authenticated()
-                .antMatchers("/login").permitAll().and().formLogin().loginPage("/login").and().logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login").and()
-                .rememberMe().tokenValiditySeconds(2592000);
+        // to other pages using JWT based authentication
+        // we remove CSRF and state in session because we do not require
+        // them in JWT authentication
+        http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+
+                // add JWT filters (1. authentication, 2. authorization)
+                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), this.accountRepository))
+                .authorizeRequests().antMatchers("/login").permitAll().antMatchers("/api/**").authenticated()
+                .antMatchers("/accounts/**").authenticated();
     }
 
     // encode password using BCrypt method
