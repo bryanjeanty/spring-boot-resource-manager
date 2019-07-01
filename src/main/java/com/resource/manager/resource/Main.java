@@ -37,59 +37,59 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ComponentScan(basePackages = { "com.resource.manager.resource" })
 @EntityScan("com.resource.manager.resource")
 public class Main {
-	private static HikariDataSource hds;
+    private static HikariDataSource hds;
 
-	public static void main(String[] args) {
-		SpringApplication.run(Main.class, args);
-	}
-
-	@Bean
-	public DataSource dataSource() {
-		HikariConfig config = new HikariConfig();
-
-		config.setJdbcUrl(System.getenv("MSSQL_AWS_URL"));
-		config.setUsername(System.getenv("MSSQL_AWS_USER"));
-		config.setPassword(System.getenv("MSSQL_AWS_PASS"));
-		config.setDriverClassName(System.getenv("MSSQL_DRIVER"));
-		config.addDataSourceProperty("cachePrepStmts", "true");
-		config.addDataSourceProperty("prepStmtCacheSize", "250");
-		config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-
-		hds = new HikariDataSource(config);
-
-		return hds;
-	}
-
-	public static Connection getConnection() throws SQLException {
-		return hds.getConnection();
-	}
-
-	@Bean
-	public JpaVendorAdapter jpaVendorAdapter() {
-		HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
-		adapter.setDatabase(Database.SQL_SERVER);
-		adapter.setGenerateDdl(true);
-		adapter.setShowSql(true);
-		return adapter;
-	}
-
-	@Bean(name = "entityManagerFactory")
-	public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(DataSource dataSource,
-			JpaVendorAdapter jpaVendorAdapter) {
-		LocalContainerEntityManagerFactoryBean emBean = new LocalContainerEntityManagerFactoryBean();
-		emBean.setDataSource(dataSource);
-		emBean.setJpaVendorAdapter(jpaVendorAdapter);
-		emBean.setPackagesToScan("com.resource.manager.resource");
-		return emBean;
-	}
-
-	@Bean
-	public JpaTransactionManager transactionManager(EntityManagerFactory emf) {
-		return new JpaTransactionManager(emf);
+    public static void main(String[] args) {
+        SpringApplication.run(Main.class, args);
     }
-    
+
     @Bean
-    public ServletWebServerFactory servletContainer(){
+    public DataSource dataSource() {
+        HikariConfig config = new HikariConfig();
+
+        config.setJdbcUrl(System.getenv("MSSQL_AWS_URL"));
+        config.setUsername(System.getenv("MSSQL_AWS_USER"));
+        config.setPassword(System.getenv("MSSQL_AWS_PASS"));
+        config.setDriverClassName(System.getenv("MSSQL_DRIVER"));
+        config.addDataSourceProperty("cachePrepStmts", "true");
+        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+
+        hds = new HikariDataSource(config);
+
+        return hds;
+    }
+
+    public static Connection getConnection() throws SQLException {
+        return hds.getConnection();
+    }
+
+    @Bean
+    public JpaVendorAdapter jpaVendorAdapter() {
+        HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+        adapter.setDatabase(Database.SQL_SERVER);
+        adapter.setGenerateDdl(true);
+        adapter.setShowSql(true);
+        return adapter;
+    }
+
+    @Bean(name = "entityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(DataSource dataSource,
+            JpaVendorAdapter jpaVendorAdapter) {
+        LocalContainerEntityManagerFactoryBean emBean = new LocalContainerEntityManagerFactoryBean();
+        emBean.setDataSource(dataSource);
+        emBean.setJpaVendorAdapter(jpaVendorAdapter);
+        emBean.setPackagesToScan("com.resource.manager.resource");
+        return emBean;
+    }
+
+    @Bean
+    public JpaTransactionManager transactionManager(EntityManagerFactory emf) {
+        return new JpaTransactionManager(emf);
+    }
+
+    @Bean
+    public ServletWebServerFactory servletContainer() {
         // enable SSL Traffic in the application
         TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {
             @Override
@@ -109,8 +109,7 @@ public class Main {
         return tomcat;
     }
 
-
-    private Connector httpToHttpsRedirectConnector(){
+    private Connector httpToHttpsRedirectConnector() {
         Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
         connector.setScheme("http");
         connector.setPort(8080);
