@@ -1,8 +1,7 @@
 package com.resource.manager.resource.config;
 
+import com.resource.manager.resource.filters.JwtAuthenticationFilter;
 import com.resource.manager.resource.repository.AccountRepository;
-import com.resource.manager.resource.repository.JwtAuthenticationFilter;
-import com.resource.manager.resource.repository.JwtAuthorizationFilter;
 import com.resource.manager.resource.service.AccountDetailsService;
 
 import org.springframework.context.annotation.Bean;
@@ -42,9 +41,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                 // add JWT filters (1. authentication, 2. authorization)
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), this.accountRepository))
-                .authorizeRequests().antMatchers("/login").permitAll().antMatchers("/api/**").authenticated()
-                .antMatchers("/accounts/**").authenticated();
+                // .addFilter(new JwtAuthorizationFilter(authenticationManager(),
+                // this.accountRepository))
+                .authorizeRequests().antMatchers("/login*").permitAll().antMatchers("/").permitAll().anyRequest()
+                .authenticated()
+                // .antMatchers("/accounts/**").authenticated()
+                .and().formLogin().loginPage("/login").failureUrl("/login.html?error=true").failureForwardUrl("/login")
+                .defaultSuccessUrl("/").and().exceptionHandling().accessDeniedPage("/login");
     }
 
     // encode password using BCrypt method

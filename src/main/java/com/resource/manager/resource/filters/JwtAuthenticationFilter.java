@@ -1,4 +1,4 @@
-package com.resource.manager.resource.repository;
+package com.resource.manager.resource.filters;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.resource.manager.resource.config.JwtProperties;
-import com.resource.manager.resource.controller.AccountPrincipal;
-import com.resource.manager.resource.controller.AuthenticationViewModel;
+import com.resource.manager.resource.model.AccountPrincipal;
+import com.resource.manager.resource.model.AuthenticationViewModel;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

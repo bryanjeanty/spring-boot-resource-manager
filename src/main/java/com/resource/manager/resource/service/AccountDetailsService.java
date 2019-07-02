@@ -1,6 +1,6 @@
 package com.resource.manager.resource.service;
 
-import com.resource.manager.resource.controller.AccountPrincipal;
+import com.resource.manager.resource.model.AccountPrincipal;
 import com.resource.manager.resource.entity.Account;
 import com.resource.manager.resource.repository.AccountRepository;
 

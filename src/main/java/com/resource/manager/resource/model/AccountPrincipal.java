@@ -1,6 +1,7 @@
-package com.resource.manager.resource.controller;
+package com.resource.manager.resource.model;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 import com.resource.manager.resource.entity.Account;
 
@@ -18,7 +19,7 @@ public class AccountPrincipal implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return new HashSet<GrantedAuthority>();
     }
 
     @Override
