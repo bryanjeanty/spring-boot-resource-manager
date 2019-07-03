@@ -43,13 +43,24 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         // If header does not contain BEARER or is null delegate to Spring impl and exit
         if (header == null || !header.startsWith(JwtProperties.TOKEN_PREFIX)) {
+
+            // if the header is not valid, go to the next filter
             chain.doFilter(request, response);
             return;
         }
 
+        // If there is no token provided, then the user won't be authenticated.
+        // It's Ok. Maybe the user is accessing a public path or asking for a token.
+
+        // All secured paths that needs a token are already defined and secured in
+        // config class. And If user tried to access without access token, then he
+        // won't be authenticated and an exception will be thrown.
+
         // If header is present, try grab user principal from database and perform
         // authorization
         Authentication authentication = getUsernamePasswordAuthentication(request);
+
+        // now, the user is authenticated
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // Continue filter execution
@@ -71,7 +82,14 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             // pass, authorities/roles
             if (userName != null) {
                 Account account = accountRepository.findByUsername(userName);
+
                 AccountPrincipal principal = new AccountPrincipal(account);
+
+                // Create auth object
+                // UsernamePasswordAuthenticationToken: A built-in object, used by spring to
+                // represent the current authenticated / being authenticated user.
+                // It needs a list of authorities, which has type of GrantedAuthority interface,
+                // where SimpleGrantedAuthority is an implementation of that interface
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userName, null,
                         principal.getAuthorities());
                 return auth;
@@ -86,5 +104,4 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }

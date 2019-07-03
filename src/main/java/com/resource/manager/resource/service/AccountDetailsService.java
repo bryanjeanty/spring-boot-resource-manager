@@ -18,6 +18,8 @@ public class AccountDetailsService implements UserDetailsService {
         this.accountRepository = accountRepository;
     }
 
+    // find the user in the database using the "username" parameter
+    // passed in the function
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 

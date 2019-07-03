@@ -17,6 +17,8 @@ public class AccountPrincipal implements UserDetails {
         this.account = account;
     }
 
+    // return an empty HashSet as we have not defined any user
+    // roles in our aapplication
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return new HashSet<GrantedAuthority>();
@@ -47,6 +49,8 @@ public class AccountPrincipal implements UserDetails {
         return true;
     }
 
+    // checks if the current user is active or not
+    // ie. the session/token has not expired
     @Override
     public boolean isEnabled() {
         return true;
