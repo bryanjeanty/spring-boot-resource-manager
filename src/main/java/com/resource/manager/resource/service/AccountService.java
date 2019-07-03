@@ -11,30 +11,30 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AccountService {
-  private final AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
-  @Autowired
-  public AccountService(AccountRepository accountRepository) {
-    this.accountRepository = accountRepository;
-  }
+    @Autowired
+    public AccountService(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
 
-  // save record
-  public Account save(Account account) {
-    return accountRepository.save(account);
-  }
+    // save record
+    public Account save(Account account) {
+        return accountRepository.save(account);
+    }
 
-  // find all records
-  public List<Account> findAll() {
-    return accountRepository.findAll();
-  }
+    // find all records
+    public List<Account> findAll() {
+        return accountRepository.findAll();
+    }
 
-  // find specific record
-  public Optional<Account> findById(int accountId) {
-    return accountRepository.findById(accountId);
-  }
+    // find specific record
+    public Optional<Account> findById(int accountId) {
+        return accountRepository.findById(accountId);
+    }
 
-  // delete a record
-  public void delete(Account account) {
-    accountRepository.delete(account);
-  }
+    // delete a record
+    public void delete(Account account) {
+        accountRepository.delete(account);
+    }
 }
