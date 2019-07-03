@@ -6,14 +6,19 @@ import java.sql.SQLException;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+import com.resource.manager.resource.repository.BaseRepositoryImpl;
+// import com.resource.manager.resource.repository.DataRepoImpl;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -24,17 +29,23 @@ import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {
+		"com.resource.manager.resource" }, exclude = JpaRepositoriesAutoConfiguration.class)
 @EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class })
-@EnableJpaRepositories(basePackages = "com.resource.manager.resource.repository")
+@EnableJpaRepositories(basePackages = "com.resource.manager.resource.repository", repositoryBaseClass = BaseRepositoryImpl.class)
 @EnableTransactionManagement
 @ComponentScan(basePackages = { "com.resource.manager.resource" })
-@EntityScan("com.resource.manager.resource")
-public class Main {
+@EntityScan("com.resource.manager.resource.entity")
+public class Main extends SpringBootServletInitializer {
 	private static HikariDataSource hds;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Main.class, args);
+	}
+
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(Main.class);
 	}
 
 	@Bean
