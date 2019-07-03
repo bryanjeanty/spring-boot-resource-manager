@@ -1,9 +1,9 @@
 package com.resource.manager.resource.repository;
 
-import com.resource.manager.resource.entity.Data;
+import com.resource.manager.resource.entity.DataTables;
 
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DataRepository extends BaseRepository<Data, Integer>, DataRepositoryCustom {
+public interface DataRepository extends BaseRepository<DataTables, Integer>, DataRepositoryCustom {
 }
