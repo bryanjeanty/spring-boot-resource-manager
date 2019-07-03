@@ -18,15 +18,15 @@ public class ResourceService {
         this.dataRepository = dataRepository;
     }
 
-    public HashMap<Integer, Boolean> doesTableExist(Data data) {
+    public HashMap<Boolean, Integer> doesTableExist(Data data) {
         return dataRepository.doesTableExist(data);
     }
 
-    public int createTable(HashMap<Integer, Boolean> myMap, String[] columnNames) {
+    public int createTable(HashMap<Boolean, Integer> myMap, String[] columnNames) {
         return dataRepository.createTable(myMap, columnNames);
     }
 
-    public int createTable(HashMap<Integer, Boolean> myMap) {
+    public int createTable(HashMap<Boolean, Integer> myMap) {
         return dataRepository.createTable(myMap);
     }
 

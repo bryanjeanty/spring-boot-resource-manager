@@ -32,64 +32,49 @@ public class ResourceController {
         this.resourceService = resourceService;
     }
 
-    // @PostMapping
-    // public @ResponseBody ResponseEntity<HashMap<Data, String>> createRecord(@RequestBody Data data) {
-    //     HashMap<Data, String> response = new HashMap<Data, String>();
-    //     if (data.getVersionNumber() == 0) {
-    //         response.put(data, "Please provide a version number!");
-    //         return ResponseEntity.badRequest().body(response);
-    //     }
-    //     int versionNumber = data.getVersionNumber();
-    //     if ((data.getColumnNames().equals(null)) || (data.getColumnNames().equals(""))) {
-    //         String[] columnNames = data.getColumnNames().split(", ");
-    //         versionNumber = resourceService.createTable(resourceService.doesTableExist(data), columnNames);
-    //     } else {
-    //         versionNumber = resourceService.createTable(resourceService.doesTableExist(data));
-    //         response.put(data, String.format("Your version number is: %d; No column names provided", versionNumber));
-    //         response.put(data, "Version number provided. No column names provided");
-    //         return ResponseEntity.badRequest();
-    //     }
-    //     Data newResource = resourceService.createRecordByVersionNumber(versionNumber, data);
-    //     if (data.getVersionNumber() != newResource.getVersionNumber()) {
-    //         DataTables dt = new DataTables();
-    //         dt.setRefTableVersionNum(data.getVersionNumber());
-    //         dt.setDerTableVersionNum(newResource.getVersionNumber());
-    //         resourceService.save(dt);
-    //     }
-    //     response.put(data, "Version number and column names provided");
-    //     return ResponseEntity.ok().body(response);
-    // }
-
     @PostMapping
     public @ResponseBody ResponseEntity<Data> createRecord(@Valid @RequestBody Data data) {
+        // if version number from request body is 0, then ask user to provide a version
+        // number
         if (data.getVersionNumber() == 0) {
             data.setMessage("Please provide a version number!");
             return ResponseEntity.badRequest().body(data);
         }
 
+        // save the version number in a variable
         int versionNumber = data.getVersionNumber();
 
+        // if column name is empty...
         if (data.getColumnNames().equals("")) {
+            // update message
             data.setMessage(String.format("Version number: %d provided. No column names provided. ", versionNumber));
+            // set version number to value returned from function (same number if table
+            // exist; different number if new table)
             versionNumber = resourceService.createTable(resourceService.doesTableExist(data));
+            return ResponseEntity.badRequest().body(data);
         } else {
-            data.setMessage(String.format("Version number: %d, and column names: %s provided. ", versionNumber, data.getColumnNames()));
+            data.setMessage(String.format("Version number: %d, and column names: %s provided. ", versionNumber,
+                    data.getColumnNames()));
             String[] columnNames = data.getColumnNames().split(", ");
             versionNumber = resourceService.createTable(resourceService.doesTableExist(data), columnNames);
         }
 
-        Data newResource = resourceService.createRecordByVersionNumber(versionNumber, data);
-        if (data.getVersionNumber() != newResource.getVersionNumber()) {
-            DataTables dt = new DataTables();
-            dt.setRefTableVersionNum(data.getVersionNumber());
-            dt.setDerTableVersionNum(newResource.getVersionNumber());
-            resourceService.save(dt);
-        }
+        return ResponseEntity.ok().body(data);
 
-        String successMessage = data.getMessage();
-        successMessage += "New Record successfully inserted into table: data" + data.getVersionNumber();
-        newResource.setMessage(successMessage);
-        return ResponseEntity.ok().body(newResource);
+        // Data newResource = resourceService.createRecordByVersionNumber(versionNumber,
+        // data);
+        // if (data.getVersionNumber() != newResource.getVersionNumber()) {
+        // DataTables dt = new DataTables();
+        // dt.setRefTableVersionNum(data.getVersionNumber());
+        // dt.setDerTableVersionNum(newResource.getVersionNumber());
+        // resourceService.save(dt);
+        // }
+
+        // String successMessage = data.getMessage();
+        // successMessage += "New Record successfully inserted into table: data" +
+        // data.getVersionNumber();
+        // newResource.setMessage(successMessage);
+        // return ResponseEntity.ok().body(newResource);
     }
 
     @GetMapping

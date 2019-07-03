@@ -6,11 +6,11 @@ import java.util.HashMap;
 import com.resource.manager.resource.entity.Data;
 
 public interface DataRepositoryCustom {
-    public HashMap<Integer, Boolean> doesTableExist(Data data);
+    public HashMap<Boolean, Integer> doesTableExist(Data data);
 
-    public int createTable(HashMap<Integer, Boolean> myMap, String[] columns);
+    public int createTable(HashMap<Boolean, Integer> myMap, String[] columns);
 
-    public int createTable(HashMap<Integer, Boolean> myMap);
+    public int createTable(HashMap<Boolean, Integer> myMap);
 
     public List<Data> getDataFromDatabase(String query);
 

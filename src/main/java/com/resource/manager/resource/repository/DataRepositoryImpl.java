@@ -20,21 +20,21 @@ public class DataRepositoryImpl implements DataRepositoryCustom {
 
     @Override
     @Transactional
-    public HashMap<Integer, Boolean> doesTableExist(Data data) {
+    public HashMap<Boolean, Integer> doesTableExist(Data data) {
         int refTabVerNum = data.getVersionNumber();
         String selectQuery = "SELECT ReferenceTableVersionNumber FROM dataTables WHERE ReferenceTableVersionNumber = '" + refTabVerNum + "'";
-        HashMap<Integer, Boolean> myMap = new HashMap<Integer, Boolean>();
+        HashMap<Boolean, Integer> myMap = new HashMap<Boolean, Integer>();
 
         try {
             List<?> results = entityManager.createNativeQuery(selectQuery).getResultList();
 
             if (!results.isEmpty()) {
-                myMap.put(refTabVerNum, true);
+                myMap.put(true, refTabVerNum);
             }
 
         } catch (NoResultException ex) {
-            System.out.println("No entity found for query");
-            myMap.put(refTabVerNum, false);
+            System.out.println("Creating new table....");
+            myMap.put(false, refTabVerNum);
         } finally {
             entityManager.close();
         }
@@ -44,16 +44,12 @@ public class DataRepositoryImpl implements DataRepositoryCustom {
 
     @Override
     @Transactional
-    public int createTable(HashMap<Integer, Boolean> myMap, String[] columns) {
-        int refTabVerNum = 0;
-
-        for (HashMap.Entry<Integer, Boolean> entry : myMap.entrySet()) {
-            if (entry.getValue() == true) {
-                return entry.getKey();
-            } else {
-                refTabVerNum = entry.getKey() + 1;
-            }
+    public int createTable(HashMap<Boolean, Integer> myMap, String[] columns) {
+        if (myMap.get(true) != null) {
+            return myMap.get(true);
         }
+
+        int refTabVerNum = myMap.get(false) + 1;
 
         String createQuery = "CREATE TABLE data" + refTabVerNum + "(Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,"
                 + "Name VARCHAR(150)," + "Code INT," + "VersionNumber INT NOT NULL,";
@@ -77,25 +73,14 @@ public class DataRepositoryImpl implements DataRepositoryCustom {
         return refTabVerNum;
     }
 
-    public static int getIntKey(HashMap<Integer, Boolean> myMap, boolean tableStatus) {
-        for (HashMap.Entry<Integer, Boolean> entry : myMap.entrySet()) {
-            if (entry.getValue() == tableStatus) {
-                return entry.getKey();
-            }
-        }
-        return 0;
-    }
-
     @Override
     @Transactional
-    public int createTable(HashMap<Integer, Boolean> myMap) {
-        for (HashMap.Entry<Integer, Boolean> entry : myMap.entrySet()) {
-            if (entry.getValue() == true) {
-                return entry.getKey();
-            }
+    public int createTable(HashMap<Boolean, Integer> myMap) {
+        if (myMap.get(true) != null) {
+            return myMap.get(true);
         }
 
-        int refTabVerNum = getIntKey(myMap, false) + 1;
+        int refTabVerNum = myMap.get(false) + 1;
 
         String createQuery = "CREATE TABLE data" + refTabVerNum + " (Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,"
                 + " Name VARCHAR(150)," + " Code INT," + " VersionNumber INT NOT NULL);";
