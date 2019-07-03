@@ -30,8 +30,15 @@ public class AccountController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    public AccountController(AccountService accountService) {
+      this.accountService = accountService;
+    }
+
   @PostMapping
   public ResponseEntity<String> createAccount(@Valid @RequestBody Account account) {
+    String tempPassword = account.getPassword();
+    account.setPassword(passwordEncoder.encode(tempPassword));
     accountService.save(account);
     return new ResponseEntity<>("Account successfully created", HttpStatus.CREATED);
   }
@@ -53,7 +60,9 @@ public class AccountController {
         .orElseThrow(() -> new AccountWithIdNotFoundException(accountId));
     updatedAccount.setUsername(updates.getUsername());
     updatedAccount.setEmail(updates.getEmail());
-    updatedAccount.setPassword(updates.getPassword());
+    updatedAccount.setPassword(passwordEncoder.encode(updates.getPassword()));
+    return new ResponseEntity<>("Account successfully updated", HttpStatus.OK);
+  }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<String> deleteAccountById(@PathVariable("id") int accountId) {
