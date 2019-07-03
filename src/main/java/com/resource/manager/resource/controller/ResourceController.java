@@ -6,6 +6,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import com.resource.manager.resource.entity.Data;
+import com.resource.manager.resource.entity.DataTables;
 import com.resource.manager.resource.service.ResourceService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,12 @@ public class ResourceController {
         String[] columnNames = data.getColumnNames().split(", ");
         int versionNumber = resourceService.createTable(resourceService.doesTableExist(data), columnNames);
         Data newResource = resourceService.createRecordByVersionNumber(versionNumber, data);
-
+        if (data.getVersionNumber() != newResource.getVersionNumber()) {
+            DataTables dt = new DataTables();
+            dt.setRefTableVersionNum(data.getVersionNumber());
+            dt.setDerTableVersionNum(newResource.getVersionNumber());
+            resourceService.save(dt);
+        }
         response.put(newResource, "Successfully added new resource");
         return ResponseEntity.ok().body(response);
     }
@@ -64,8 +70,14 @@ public class ResourceController {
             response.put(data, "Please provide a version number");
             return ResponseEntity.badRequest().body(response);
         }
-        Data newResource = resourceService.updateRecordByVersionNumberAndId(data.getVersionNumber(), dataId, data);
-        response.put(newResource, "Successfully updated resource");
+        Data updatedResource = resourceService.updateRecordByVersionNumberAndId(data.getVersionNumber(), dataId, data);
+        if (data.getVersionNumber() != updatedResource.getVersionNumber()) {
+            DataTables dt = new DataTables();
+            dt.setRefTableVersionNum(data.getVersionNumber());
+            dt.setDerTableVersionNum(updatedResource.getVersionNumber());
+            resourceService.save(dt);
+        }
+        response.put(updatedResource, "Successfully updated resource");
         return ResponseEntity.ok().body(response);
     }
 

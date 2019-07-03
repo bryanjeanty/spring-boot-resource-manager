@@ -55,7 +55,7 @@ public class DataRepositoryImpl implements DataRepositoryCustom {
             if (entry.getValue() == true) {
                 return entry.getKey();
             } else {
-                refTabVerNum = entry.getKey();
+                refTabVerNum = entry.getKey() + 1;
             }
         }
 
