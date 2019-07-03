@@ -1,4 +1,4 @@
-package com.resource.manager.resource.controller;
+package com.resource.manager.resource.authenticationmodels;
 
 public class AuthenticationViewModel {
     private String username;

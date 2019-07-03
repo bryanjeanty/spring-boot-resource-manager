@@ -1,6 +1,5 @@
 package com.resource.manager.resource.config;
 
-import com.resource.manager.resource.filters.JwtAuthenticationFilter;
 import com.resource.manager.resource.repository.AccountRepository;
 import com.resource.manager.resource.service.AccountDetailsService;
 
@@ -26,6 +25,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.accountRepository = accountRepository;
     }
 
+    // encode password using BCrypt method
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
+        return passwordEncoder;
+    }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(authenticationProvider());
@@ -38,27 +45,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         // we remove CSRF and state in session because we do not require
         // them in JWT authentication
         http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .authorizeRequests().antMatchers("/").permitAll().antMatchers("/login*").permitAll()
+                .antMatchers("/api/**").authenticated().antMatchers("/resource/**").authenticated()
+                // all other url requests need to be authenticated to access
+                .anyRequest().authenticated().and()
 
                 // add JWT filters (1. authentication, 2. authorization)
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-                // .addFilter(new JwtAuthorizationFilter(authenticationManager(),
-                // this.accountRepository))
-                .authorizeRequests().antMatchers("/login*").permitAll().antMatchers("/").permitAll().anyRequest()
-                .authenticated()
-                // .antMatchers("/accounts/**").authenticated()
-                .and().formLogin().loginPage("/login").failureUrl("/login.html?error=true").failureForwardUrl("/login")
-                .defaultSuccessUrl("/").and().exceptionHandling().accessDeniedPage("/login");
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), this.accountRepository))
+                .exceptionHandling().accessDeniedPage("/login");
     }
 
-    // encode password using BCrypt method
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
-        return passwordEncoder;
-    }
-
-    DaoAuthenticationProvider authenticationProvider() {
+    public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         daoAuthenticationProvider.setUserDetailsService(this.accountDetailsService);

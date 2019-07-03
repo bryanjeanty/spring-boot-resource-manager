@@ -1,7 +1,7 @@
-package com.resource.manager.resource.filters;
+package com.resource.manager.resource.config;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 import javax.servlet.FilterChain;
@@ -12,8 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.resource.manager.resource.config.JwtProperties;
-import com.resource.manager.resource.model.AccountPrincipal;
-import com.resource.manager.resource.model.AuthenticationViewModel;
+import com.resource.manager.resource.authenticationmodels.*;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -51,7 +50,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // Spring Security uses this token to authenticate by using
         // token provided by us
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                credentials.getUsername(), credentials.getPassword(), new ArrayList<>());
+                credentials.getUsername(), credentials.getPassword(), Collections.emptyList());
 
         // authenticate the user
         Authentication authentication = authenticationManager.authenticate(authenticationToken);

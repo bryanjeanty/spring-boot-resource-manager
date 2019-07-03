@@ -1,4 +1,4 @@
-package com.resource.manager.resource.model;
+package com.resource.manager.resource.authenticationmodels;
 
 import java.util.Collection;
 import java.util.HashSet;
