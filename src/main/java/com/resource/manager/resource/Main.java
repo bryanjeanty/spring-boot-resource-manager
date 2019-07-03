@@ -7,7 +7,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import com.resource.manager.resource.repository.BaseRepositoryImpl;
-// import com.resource.manager.resource.repository.DataRepoImpl;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 

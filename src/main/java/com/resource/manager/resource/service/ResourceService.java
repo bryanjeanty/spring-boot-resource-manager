@@ -26,6 +26,10 @@ public class ResourceService {
         return dataRepository.createTable(myMap, columnNames);
     }
 
+    public int createTable(HashMap<Integer, Boolean> myMap) {
+        return dataRepository.createTable(myMap);
+    }
+
     public Data createRecordByVersionNumber(int versionNumber, Data data) {
         return dataRepository.createRecordByVersionNumber(versionNumber, data);
     }

@@ -32,15 +32,52 @@ public class ResourceController {
         this.resourceService = resourceService;
     }
 
-    @PostMapping("/")
-    public @ResponseBody ResponseEntity<HashMap<Data, String>> createRecord(@Valid @RequestBody Data data) {
-        HashMap<Data, String> response = new HashMap<Data, String>();
+    // @PostMapping
+    // public @ResponseBody ResponseEntity<HashMap<Data, String>> createRecord(@RequestBody Data data) {
+    //     HashMap<Data, String> response = new HashMap<Data, String>();
+    //     if (data.getVersionNumber() == 0) {
+    //         response.put(data, "Please provide a version number!");
+    //         return ResponseEntity.badRequest().body(response);
+    //     }
+    //     int versionNumber = data.getVersionNumber();
+    //     if ((data.getColumnNames().equals(null)) || (data.getColumnNames().equals(""))) {
+    //         String[] columnNames = data.getColumnNames().split(", ");
+    //         versionNumber = resourceService.createTable(resourceService.doesTableExist(data), columnNames);
+    //     } else {
+    //         versionNumber = resourceService.createTable(resourceService.doesTableExist(data));
+    //         response.put(data, String.format("Your version number is: %d; No column names provided", versionNumber));
+    //         response.put(data, "Version number provided. No column names provided");
+    //         return ResponseEntity.badRequest();
+    //     }
+    //     Data newResource = resourceService.createRecordByVersionNumber(versionNumber, data);
+    //     if (data.getVersionNumber() != newResource.getVersionNumber()) {
+    //         DataTables dt = new DataTables();
+    //         dt.setRefTableVersionNum(data.getVersionNumber());
+    //         dt.setDerTableVersionNum(newResource.getVersionNumber());
+    //         resourceService.save(dt);
+    //     }
+    //     response.put(data, "Version number and column names provided");
+    //     return ResponseEntity.ok().body(response);
+    // }
+
+    @PostMapping
+    public @ResponseBody ResponseEntity<Data> createRecord(@Valid @RequestBody Data data) {
         if (data.getVersionNumber() == 0) {
-            response.put(data, "Please provide a version number!");
-            return ResponseEntity.badRequest().body(response);
+            data.setMessage("Please provide a version number!");
+            return ResponseEntity.badRequest().body(data);
         }
-        String[] columnNames = data.getColumnNames().split(", ");
-        int versionNumber = resourceService.createTable(resourceService.doesTableExist(data), columnNames);
+
+        int versionNumber = data.getVersionNumber();
+
+        if (data.getColumnNames().equals("")) {
+            data.setMessage(String.format("Version number: %d provided. No column names provided. ", versionNumber));
+            versionNumber = resourceService.createTable(resourceService.doesTableExist(data));
+        } else {
+            data.setMessage(String.format("Version number: %d, and column names: %s provided. ", versionNumber, data.getColumnNames()));
+            String[] columnNames = data.getColumnNames().split(", ");
+            versionNumber = resourceService.createTable(resourceService.doesTableExist(data), columnNames);
+        }
+
         Data newResource = resourceService.createRecordByVersionNumber(versionNumber, data);
         if (data.getVersionNumber() != newResource.getVersionNumber()) {
             DataTables dt = new DataTables();
@@ -48,11 +85,14 @@ public class ResourceController {
             dt.setDerTableVersionNum(newResource.getVersionNumber());
             resourceService.save(dt);
         }
-        response.put(newResource, "Successfully added new resource");
-        return ResponseEntity.ok().body(response);
+
+        String successMessage = data.getMessage();
+        successMessage += "New Record successfully inserted into table: data" + data.getVersionNumber();
+        newResource.setMessage(successMessage);
+        return ResponseEntity.ok().body(newResource);
     }
 
-    @GetMapping("/")
+    @GetMapping
     public List<Data> getAllRecords(@Valid @RequestBody Data data) {
         return resourceService.getAllDataByVersionNumber(data.getVersionNumber());
     }

@@ -27,7 +27,6 @@ public class Data implements Serializable {
     @Column(name = "Name", length = 100)
     private String name;
 
-    @NotBlank
     @JsonProperty("code")
     @Column(name = "Code")
     private int code;
@@ -36,9 +35,13 @@ public class Data implements Serializable {
     @Column(name = "VersionNumber")
     private int versionNumber;
 
-    private String columnNames;
+    @JsonProperty("columnNames")
+    private String columnNames = "";
 
-    private String columnValues;
+    @JsonProperty("columnValues")
+    private String columnValues = "";
+
+    private String message;
 
     public Data() {
         super();
@@ -60,14 +63,16 @@ public class Data implements Serializable {
         return this.versionNumber;
     }
 
-    @JsonProperty("columnNames")
     public String getColumnNames() {
         return this.columnNames;
     }
 
-    @JsonProperty("columnValues")
     public String getColumnValues() {
         return this.columnValues;
+    }
+
+    public String getMessage() {
+        return this.message;
     }
 
     public void setId(int id) {
@@ -92,5 +97,9 @@ public class Data implements Serializable {
 
     public void setColumnValues(String columnValues) {
         this.columnValues = columnValues;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

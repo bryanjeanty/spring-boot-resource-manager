@@ -31,13 +31,13 @@ public class AccountController {
     this.accountService = accountService;
   }
 
-  @PostMapping("/")
+  @PostMapping
   public ResponseEntity<String> createAccount(@Valid @RequestBody Account account) {
     accountService.save(account);
     return new ResponseEntity<>("Account successfully created", HttpStatus.CREATED);
   }
 
-  @GetMapping("/")
+  @GetMapping
   public List<Account> getAllAccounts() {
     return accountService.findAll();
   }

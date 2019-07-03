@@ -10,9 +10,11 @@ public interface DataRepositoryCustom {
 
     public int createTable(HashMap<Integer, Boolean> myMap, String[] columns);
 
+    public int createTable(HashMap<Integer, Boolean> myMap);
+
     public List<Data> getDataFromDatabase(String query);
 
-    public Data putDataIntoDatabase(String query);
+    public int putDataIntoDatabase(String query);
 
     public Data createRecordByVersionNumber(int versionNumber, Data data);
 
