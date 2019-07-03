@@ -12,6 +12,7 @@ import com.resource.manager.resource.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,12 +25,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/accounts")
 public class AccountController {
-  private final AccountService accountService;
+    private final AccountService accountService;
 
-  @Autowired
-  public AccountController(AccountService accountService) {
-    this.accountService = accountService;
-  }
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
   @PostMapping
   public ResponseEntity<String> createAccount(@Valid @RequestBody Account account) {
@@ -55,10 +54,6 @@ public class AccountController {
     updatedAccount.setUsername(updates.getUsername());
     updatedAccount.setEmail(updates.getEmail());
     updatedAccount.setPassword(updates.getPassword());
-
-    accountService.save(updatedAccount);
-    return new ResponseEntity<>("Account successfully updated", HttpStatus.OK);
-  }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<String> deleteAccountById(@PathVariable("id") int accountId) {
