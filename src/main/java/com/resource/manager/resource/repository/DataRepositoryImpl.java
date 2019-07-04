@@ -21,20 +21,21 @@ public class DataRepositoryImpl implements DataRepositoryCustom {
     @Override
     @Transactional
     public HashMap<Boolean, Integer> doesTableExist(Data data) {
-        int refTabVerNum = data.getVersionNumber();
-        String selectQuery = "SELECT ReferenceTableVersionNumber FROM dataTables WHERE ReferenceTableVersionNumber = '" + refTabVerNum + "'";
+        int derTabVerNum = data.getVersionNumber();
+        String selectQuery = "SELECT DerivedTableVersionNumber FROM dataTables WHERE DerivedTableVersionNumber = '" + derTabVerNum + "'";
         HashMap<Boolean, Integer> myMap = new HashMap<Boolean, Integer>();
 
         try {
             List<?> results = entityManager.createNativeQuery(selectQuery).getResultList();
 
-            if (!results.isEmpty()) {
-                myMap.put(true, refTabVerNum);
-            }
+            if (!(results.isEmpty())) {
+                myMap.put(true, derTabVerNum);
+            } else {
+		myMap.put(false, derTabVerNum);
+	    }
 
         } catch (NoResultException ex) {
             System.out.println("Creating new table....");
-            myMap.put(false, refTabVerNum);
         } finally {
             entityManager.close();
         }
@@ -45,17 +46,17 @@ public class DataRepositoryImpl implements DataRepositoryCustom {
     @Override
     @Transactional
     public int createTable(HashMap<Boolean, Integer> myMap, String[] columns) {
-        if (myMap.get(true) != null) {
-            return myMap.get(true);
-        }
+	if (myMap.get(false) == null) {
+		return myMap.get(true);
+	}
 
-        int refTabVerNum = myMap.get(false) + 1;
+	int derTabVerNum = myMap.get(false);
 
-        String createQuery = "CREATE TABLE data" + refTabVerNum + "(Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,"
-                + "Name VARCHAR(150)," + "Code INT," + "VersionNumber INT NOT NULL,";
+        String createQuery = "CREATE TABLE data" + derTabVerNum + " (Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,"
+                + " Name VARCHAR(150)," + " Code INT," + " VersionNumber INT NOT NULL,";
 
         for (int i = 0; i < columns.length; i++) {
-            createQuery += "\n" + columns[i] + "VARCHAR";
+            createQuery += " " + columns[i] + " VARCHAR(MAX)";
             if (i != (columns.length - 1)) {
                 createQuery += ",";
             } else {
@@ -70,19 +71,19 @@ public class DataRepositoryImpl implements DataRepositoryCustom {
         } finally {
             entityManager.close();
         }
-        return refTabVerNum;
+        return derTabVerNum - 1;
     }
 
     @Override
     @Transactional
     public int createTable(HashMap<Boolean, Integer> myMap) {
-        if (myMap.get(true) != null) {
+        if (myMap.get(false) == null) {
             return myMap.get(true);
         }
 
-        int refTabVerNum = myMap.get(false) + 1;
+        int derTabVerNum = myMap.get(false);
 
-        String createQuery = "CREATE TABLE data" + refTabVerNum + " (Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,"
+        String createQuery = "CREATE TABLE data" + derTabVerNum + " (Id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,"
                 + " Name VARCHAR(150)," + " Code INT," + " VersionNumber INT NOT NULL);";
 
         try {
@@ -92,7 +93,7 @@ public class DataRepositoryImpl implements DataRepositoryCustom {
         } finally {
             entityManager.close();
         }
-        return refTabVerNum;
+        return derTabVerNum - 1;
     }
 
     @Override
@@ -115,23 +116,9 @@ public class DataRepositoryImpl implements DataRepositoryCustom {
 
     @Override
     @Transactional
-    public int putDataIntoDatabase(String query) {
-        int rowsAffected = 0;
-        try {
-            rowsAffected = entityManager.createNativeQuery(query).executeUpdate();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            entityManager.close();
-        }
-        return rowsAffected;
-    }
-
-    @Override
-    @Transactional
     public Data createRecordByVersionNumber(int versionNumber, Data data) {
         String insertQuery = "INSERT INTO data" + versionNumber + " (Name, Code, VersionNumber";
-        if (!(data.getColumnNames().equals(null) || data.getColumnNames().equals(""))) {
+        if (!(data.getColumnValues().equals(null) || data.getColumnValues().equals(""))) {
             String[] columnNamesArray = data.getColumnNames().split(", ");
             String[] columnValuesArray = data.getColumnValues().split(", ");
 
@@ -172,6 +159,7 @@ public class DataRepositoryImpl implements DataRepositoryCustom {
     }
 
     @Override
+    @Transactional
     public Data updateRecordByVersionNumberAndId(int versionNumber, int dateId, Data data) {
         int dataId = dateId;
         String updateQuery = "UPDATE data" + versionNumber + " SET Name ='" + data.getName() + "', Code='"
@@ -185,7 +173,15 @@ public class DataRepositoryImpl implements DataRepositoryCustom {
             }
         }
         updateQuery += "WHERE Id='" + dataId + "'";
-        putDataIntoDatabase(updateQuery);
+
+        try {
+            entityManager.createNativeQuery(updateQuery).executeUpdate();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            entityManager.close();
+        }
+
         return data;
     }
 
