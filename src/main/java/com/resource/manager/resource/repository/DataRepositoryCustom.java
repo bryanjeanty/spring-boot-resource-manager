@@ -14,8 +14,6 @@ public interface DataRepositoryCustom {
 
     public List<Data> getDataFromDatabase(String query);
 
-    public int putDataIntoDatabase(String query);
-
     public Data createRecordByVersionNumber(int versionNumber, Data data);
 
     public List<Data> getAllDataByVersionNumber(int versionNumber);
