@@ -33,3 +33,6 @@ build/
 ### Vim / Nano ###
 *.swp
 *.swo
+
+### jedit ###
+*~
