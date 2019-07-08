@@ -1,4 +1,4 @@
-package com.resource.manager.resource.repository;
+/*package com.resource.manager.resource.repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -201,3 +201,4 @@ public class DataRepositoryImpl implements DataRepositoryCustom {
         return rowsAffected;
     }
 }
+*/
