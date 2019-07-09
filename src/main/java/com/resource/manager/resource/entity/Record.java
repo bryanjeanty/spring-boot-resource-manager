@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -20,12 +19,15 @@ public class Record implements Serializable {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
-    @NotBlank
     @JsonProperty("type")
-    @Column(name = "type", length = 100)
+    @Column(name = "type")
     private String type;
+    
+    @JsonProperty("typeId")
+    @Column(name = "type_id")
+    private int typeId;
 
     @JsonProperty("keys")
     @Column(name = "keys")
@@ -35,12 +37,12 @@ public class Record implements Serializable {
     @Column(name = "key_values")
     private String keyValues;
 
-    @JsonProperty("dataType")
-    @Column(name = "data_type")
-    private String dataType;
+    @JsonProperty("dataTypes")
+    @Column(name = "data_types")
+    private String dataTypes;
 
     @JsonProperty("version")
-    private long version;
+    private int version;
 
     @JsonProperty("editable")
     private boolean editable;
@@ -49,12 +51,16 @@ public class Record implements Serializable {
         super();
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
     public String getType() {
         return type;
+    }
+    
+    public int getTypeId() {
+    	return typeId;	
     }
 
     public String getKeys() {
@@ -65,11 +71,11 @@ public class Record implements Serializable {
         return keyValues;
     }
 
-    public String getDataType() {
-        return dataType;
+    public String getDataTypes() {
+        return dataTypes;
     }
 
-    public long getVersion() {
+    public int getVersion() {
         return version;
     }
 
@@ -80,6 +86,10 @@ public class Record implements Serializable {
     public void setType(String type) {
         this.type = type;
     }
+    
+    public void setTypeId(int typeId) {
+    	this.typeId = typeId;
+    }
 
     public void setKeys(String keys) {
         this.keys = keys;
@@ -89,11 +99,11 @@ public class Record implements Serializable {
         this.keyValues = keyValues;
     }
 
-    public void setDataType(String dataType) {
-        this.dataType = dataType;
+    public void setDataTypes(String dataTypes) {
+        this.dataTypes = dataTypes;
     }
 
-    public void setVersion(long version) {
+    public void setVersion(int version) {
         this.version = version;
     }
 

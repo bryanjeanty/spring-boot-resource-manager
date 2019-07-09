@@ -17,40 +17,40 @@ public class RecordRepositoryImpl implements RecordCustomMethods {
 	private EntityManager entityManager;
 	
 	@Override
-	public Map<Resource, Record> findAllResources() {
-		String selectQuery = "SELECT type, keys, key_values, data_type FROM record WHERE type = 'resource'";
+	public List<Record> findAllResources() {
+		String selectRecordsQuery = "SELECT type, type_id, keys, key_values, data_types FROM record WHERE type = 'resource'";
 
 		List<String> typeArray = new ArrayList<String>();
+		List<Integer> typeIdArray = new ArrayList<Integer>();
 		List<String> keysArray = new ArrayList<String>();
 		List<String> keyValuesArray = new ArrayList<String>();
-		List<String> dataTypeArray = new ArrayList<String>();
+		List<String> dataTypesArray = new ArrayList<String>();
 		
-		Map<Resource, Record> resourceRecords = new HashMap<Resource, Record>();
+		List<Record> resources = new ArrayList<Record>();
 		
 		try {
 		
 			@SuppressWarnings("unchecked")
-			List<Object[]> resources = entityManager.createNativeQuery(selectQuery).getResultList();
+			List<Object[]> records = entityManager.createNativeQuery(selectRecordsQuery).getResultList();
 			
-			for(Object[] resource : resources) {
-				typeArray.add((String) resource[0]);
-				keysArray.add((String) resource[1]);
-				keyValuesArray.add((String) resource[2]);
-				dataTypeArray.add((String) resource[3]);
+			for(Object[] record : records) {
+				typeArray.add((String) record[0]);
+				typeIdArray.add((Integer) record[1]);
+				keysArray.add((String) record[2]);
+				keyValuesArray.add((String) record[3]);
+				dataTypesArray.add((String) record[4]);
 			}
 			
 			for(int i = 0; i < typeArray.size(); i++) {
 				Record record = new Record();
-				Resource resource = new Resource();
-				
-				resource.setRecordId(record.getId());
 				
 				record.setType(typeArray.get(i));
+				record.setTypeId(typeIdArray.get(i));
 				record.setKeys(keysArray.get(i));
 				record.setKeyValues(keyValuesArray.get(i));
-				record.setDataType(dataTypeArray.get(i));
+				record.setDataTypes(dataTypesArray.get(i));
 				
-				resourceRecords.put(resource, record);
+				resources.add(record);
 			}
 			
 		} catch (Exception ex) {
@@ -59,56 +59,43 @@ public class RecordRepositoryImpl implements RecordCustomMethods {
 			
 		}
 		
-		return resourceRecords;
+		return resources;
 	}
 	
 	@Override
-	public Record findResourceById(long resourceId) {
-		String selectRecordIdQuery = "SELECT recordId FROM resource WHERE id ='" + resourceId + "'";
-		int recordId = 0;
-		Record record = new Record();
+	public Record findResourceById(int resourceId) {
+		String selectResourceQuery = "SELECT type, type_id, keys, key_values, data_types FROM record WHERE type = 'resource' AND type_id='" + resourceId + "'";
+		Record resource = new Record();
 		
 		try {
 			
-			recordId = (int) entityManager.createNativeQuery(selectRecordIdQuery, Integer.class).getSingleResult();
-			if (recordId > 0) {
-				String selectResourceQuery = "SELECT type, keys, key_values, data_type FROM record WHERE type = 'resource' AND id='" + recordId + "'";
-				
-				try {
-				
-					@SuppressWarnings("unchecked")
-					List<Object[]> recordList = entityManager.createNativeQuery(selectResourceQuery).getResultList();
+			@SuppressWarnings("unchecked")
+			List<Object[]> records = entityManager.createNativeQuery(selectResourceQuery).getResultList();
 					
-					for (Object[] recordItem : recordList) {
-						record.setType((String) recordItem[0]);
-						record.setKeys((String) recordItem[1]);
-						record.setKeyValues((String) recordItem[2]);
-						record.setDataType((String) recordItem[3]);
-					}
-					
-				} catch (Exception ex) {
-				
-					ex.printStackTrace();
-					
-				}
+			for (Object[] record : records) {
+				resource.setType((String) record[0]);
+				resource.setTypeId((Integer) record[1]);
+				resource.setKeys((String) record[2]);
+				resource.setKeyValues((String) record[3]);
+				resource.setDataTypes((String) record[4]);
 			}
-		
+					
 		} catch (Exception ex) {
-		
+				
 			ex.printStackTrace();
-			
+				
 		}
 		
-		return record;
+		return resource;
 	}
 	
 	@Override
-	public Record updateResourceById(long resourceId, Record record) {
+	public Record updateResourceById(int resourceId, Record record) {
 		return null;
 	}
 	
 	@Override
-	public Record deleteResourceById(long resourceId) {
+	public Record deleteResourceById(int resourceId) {
 		return null;
 	}
 }

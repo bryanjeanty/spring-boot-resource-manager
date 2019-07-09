@@ -19,23 +19,27 @@ public class Resource implements Serializable {
 		@Id
 		@GeneratedValue(strategy = GenerationType.IDENTITY)
 		@Column(name = "id")
-		private long id;
+		private int id;
 		
-		@JsonProperty("recordId")
+		/*@JsonProperty("recordId")
 		@Column(name = "record_id")
-		private long recordId;
+		private long recordId;*/
 		
 		public Resource() {}
 		
-		public long getId() {
+		public int getId() {
 			return id;	
 		}
 		
-		public long getRecordId() {
+		/*public long getRecordId() {
 			return recordId;
+		}
+		
+		public void setId(long id) {
+			this.id = id;
 		}
 		
 		public void setRecordId(long recordId) {
 			this.recordId = recordId;
-		}
+		}*/
 }
