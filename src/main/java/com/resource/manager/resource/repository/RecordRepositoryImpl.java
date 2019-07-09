@@ -2,17 +2,13 @@ package com.resource.manager.resource.repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import com.resource.manager.resource.entity.Record;
-import com.resource.manager.resource.entity.Resource;
 
 public class RecordRepositoryImpl implements RecordCustomMethods {
 
