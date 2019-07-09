@@ -61,6 +61,7 @@ public class AccountController {
     updatedAccount.setUsername(updates.getUsername());
     updatedAccount.setEmail(updates.getEmail());
     updatedAccount.setPassword(passwordEncoder.encode(updates.getPassword()));
+    accountService.save(updatedAccount);
     return new ResponseEntity<>("Account successfully updated", HttpStatus.OK);
   }
 

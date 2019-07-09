@@ -21,25 +21,9 @@ public class Resource implements Serializable {
 		@Column(name = "id")
 		private int id;
 		
-		/*@JsonProperty("recordId")
-		@Column(name = "record_id")
-		private long recordId;*/
-		
 		public Resource() {}
 		
 		public int getId() {
 			return id;	
 		}
-		
-		/*public long getRecordId() {
-			return recordId;
-		}
-		
-		public void setId(long id) {
-			this.id = id;
-		}
-		
-		public void setRecordId(long recordId) {
-			this.recordId = recordId;
-		}*/
 }
