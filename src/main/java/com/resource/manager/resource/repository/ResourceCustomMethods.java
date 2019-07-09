@@ -1,16 +1,16 @@
 package com.resource.manager.resource.repository;
 
-import java.util.Map;
+import java.util.List;
 
 import com.resource.manager.resource.entity.Record;
 import com.resource.manager.resource.entity.Resource;
 
 public interface ResourceCustomMethods {
-	public Map<Resource, Record> findAllResources();
+	public List<Record> findAllResources();
 	
-	public Record findResourceById(long resourceId);
+	public Record findResourceById(int resourceId);
 	
-	public Record updateResourceById(long resourceId, Record record);
+	public Record updateResourceById(int resourceId, Record record);
 	
-	public Record deleteResourceById(long resourceId);
+	public Record deleteResourceById(int resourceId);
 }

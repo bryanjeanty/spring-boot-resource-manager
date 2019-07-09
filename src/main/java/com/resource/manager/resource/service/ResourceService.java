@@ -31,42 +31,54 @@ public class ResourceService {
 	
 	public Map saveResourceRecord(Record record) {
 		Resource resource = new Resource();
-		resource.setRecordId(record.getId());
-		resourceRepository.save(resource);
-			
-		recordRepository.save(record);
+		Resource newResource = resourceRepository.save(resource);
+		
+		record.setTypeId(newResource.getId());
+		Record newRecord = recordRepository.save(record);
 			
 		Map myMap = new LinkedHashMap();
-		List<String> keysList = new ArrayList<String>(Arrays.asList(record.getKeys().split(", ")));
-		List<String> valuesList = new ArrayList<String>(Arrays.asList(record.getKeyValues().split(", ")));
+		
+		List<String> keysList = new ArrayList<String>(Arrays.asList(newRecord.getKeys().split(", ")));
+		List<String> valuesList = new ArrayList<String>(Arrays.asList(newRecord.getKeyValues().split(", ")));
+		List<String> dataTypesList = new ArrayList<String>(Arrays.asList(newRecord.getDataTypes().split(", ")));
+		
+		myMap.put("id", newRecord.getTypeId());
+		myMap.put("type", newRecord.getType());
+		
+		for (int i = 0; i < valuesList.size(); i++) {
+			Map<String, String> myValuesMap = new LinkedHashMap<String, String>();
 			
-		myMap.put("id", resource.getId());
-		myMap.put("type", record.getType());
+			myValuesMap.put("value", valuesList.get(i));
+			myValuesMap.put("dataType", dataTypesList.get(i));
 			
-		for (int i = 0; i < keysList.size(); i++) {
-			myMap.put(keysList.get(i), valuesList.get(i));
+			myMap.put(keysList.get(i), myValuesMap);
 		}
-			
-		myMap.put("dataType", record.getDataType());
 			
 		return myMap;
 	}
 	
 	public List findAllResources() {
-		Map<Resource, Record> resourceRecords = recordRepository.findAllResources();
+		List<Record> resources = recordRepository.findAllResources();
 		List myArr = new ArrayList();
 		
-		for(Map.Entry<Resource, Record> entry : resourceRecords.entrySet()) {
+		for(Record resource : resources) {
 			Map myMap = new LinkedHashMap();
-			List<String> keysList = new ArrayList<String>(Arrays.asList(entry.getValue().getKeys().split(", ")));
-			List<String> valuesList = new ArrayList<String>(Arrays.asList(entry.getValue().getKeyValues().split(", ")));
 			
-			myMap.put("id", entry.getKey().getId());
-            myMap.put("type", entry.getValue().getType());
-            for (int i = 0; i < keysList.size(); i++) {
-                myMap.put(keysList.get(i), valuesList.get(i));
-            }
-            myMap.put("dataType", entry.getValue().getDataType());
+			List<String> keysList = new ArrayList<String>(Arrays.asList(resource.getKeys().split(", ")));
+			List<String> valuesList = new ArrayList<String>(Arrays.asList(resource.getKeyValues().split(", ")));
+			List<String> dataTypesList = new ArrayList<String>(Arrays.asList(resource.getDataTypes().split(", ")));
+			
+			myMap.put("id", resource.getTypeId());
+            myMap.put("type", resource.getType());
+			
+			for (int i = 0; i < valuesList.size(); i++) {
+				Map<String, String> myValuesMap = new LinkedHashMap<String, String>();
+				
+				myValuesMap.put("values", valuesList.get(i));
+				myValuesMap.put("dataType", dataTypesList.get(i));
+				
+				myMap.put(keysList.get(i), myValuesMap);
+			}
 
             myArr.add(myMap);
 		}
@@ -74,29 +86,75 @@ public class ResourceService {
 		return myArr;
 	}
 	
-	public Map findResourceById(long resourceId) {
-		Record resourceRecord = recordRepository.findResourceById(resourceId);
+	public Map findResourceById(int resourceId) {
+		Record resource = recordRepository.findResourceById(resourceId);
 		
 		Map myMap = new LinkedHashMap();
-		List<String> keysList = new ArrayList<String>(Arrays.asList(resourceRecord.getKeys().split(", ")));
-		List<String> valuesList = new ArrayList<String>(Arrays.asList(resourceRecord.getKeyValues().split(", ")));
 		
-		myMap.put("id", resourceId);
-		myMap.put("type", resourceRecord.getType());
+		List<String> keysList = new ArrayList<String>(Arrays.asList(resource.getKeys().split(", ")));
+		List<String> valuesList = new ArrayList<String>(Arrays.asList(resource.getKeyValues().split(", ")));
+		List<String> dataTypesList = new ArrayList<String>(Arrays.asList(resource.getDataTypes().split(", ")));
 		
-		for (int i = 0; i < keysList.size(); i++) {
-			myMap.put(keysList.get(i), valuesList.get(i));
-        }
-        
-        myMap.put("dataType", resourceRecord.getDataType());
-        
+		myMap.put("id", resource.getTypeId());
+		myMap.put("type", resource.getType());
+		
+		for (int i = 0; i < valuesList.size(); i++) {
+			Map<String, String> myValuesMap = new LinkedHashMap<String, String>();
+			
+			myValuesMap.put("value", valuesList.get(i));
+			myValuesMap.put("dataType", dataTypesList.get(i));
+			
+			myMap.put(keysList.get(i), myValuesMap);
+		}
+		
+		return myMap;
+	}
+	
+	public Map updateResourceById(int resourceId, Record record) {
+		Record updatedResource = recordRepository.updateResourceById(resourceId, record);
+		
+		Map myMap = new LinkedHashMap();
+		
+		List<String> keysList = new ArrayList<String>(Arrays.asList(updatedResource.getKeys().split(", ")));
+		List<String> valuesList = new ArrayList<String>(Arrays.asList(updatedResource.getKeyValues().split(", ")));
+		List<String> dataTypesList = new ArrayList<String>(Arrays.asList(updatedResource.getDataTypes().split(", ")));
+		
+		myMap.put("id", updatedResource.getTypeId());
+		myMap.put("type", updatedResource.getType());
+		
+		for (int i = 0; i < valuesList.size(); i++) {
+			Map<String, String> myValuesMap = new LinkedHashMap<String, String>();
+			
+			myValuesMap.put("value", valuesList.get(i));
+			myValuesMap.put("dataType", dataTypesList.get(i));
+			
+			myMap.put(keysList.get(i), myValuesMap);
+		}
+		
+		return myMap;
+	}
+	
+	public Map deleteResourceById(int resourceId) {
+		Record deletedResource = recordRepository.deleteResourceById(resourceId);
+		
+		Map myMap = new LinkedHashMap();
+		
+		List<String> keysList = new ArrayList<String>(Arrays.asList(deletedResource.getKeys().split(", ")));
+		List<String> valuesList = new ArrayList<String>(Arrays.asList(deletedResource.getKeyValues().split(", ")));
+		List<String> dataTypesList = new ArrayList<String>(Arrays.asList(deletedResource.getDataTypes().split(", ")));
+		
+		myMap.put("id", deletedResource.getTypeId());
+		myMap.put("type", deletedResource.getType());
+		
+		for (int i = 0; i < valuesList.size(); i++) {
+			Map<String, String> myValuesMap = new LinkedHashMap<String, String>();
+			
+			myValuesMap.put("value", valuesList.get(i));
+			myValuesMap.put("dataType", dataTypesList.get(i));
+			
+			myMap.put(keysList.get(i), myValuesMap);
+		}
+		
 		return myMap;
 	}
 }
-
-
-
-
-
-
-

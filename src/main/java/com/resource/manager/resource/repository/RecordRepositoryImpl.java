@@ -8,6 +8,9 @@ import java.util.HashMap;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
+
 import com.resource.manager.resource.entity.Record;
 import com.resource.manager.resource.entity.Resource;
 
@@ -17,40 +20,40 @@ public class RecordRepositoryImpl implements RecordCustomMethods {
 	private EntityManager entityManager;
 	
 	@Override
-	public Map<Resource, Record> findAllResources() {
-		String selectQuery = "SELECT type, keys, key_values, data_type FROM record WHERE type = 'resource'";
+	public List<Record> findAllResources() {
+		String selectQuery = "SELECT type, type_id, keys, key_values, data_types FROM record WHERE type = 'resource'";
 
 		List<String> typeArray = new ArrayList<String>();
+		List<Integer> typeIdArray = new ArrayList<Integer>();
 		List<String> keysArray = new ArrayList<String>();
 		List<String> keyValuesArray = new ArrayList<String>();
-		List<String> dataTypeArray = new ArrayList<String>();
+		List<String> dataTypesArray = new ArrayList<String>();
 		
-		Map<Resource, Record> resourceRecords = new HashMap<Resource, Record>();
+		List<Record> resources = new ArrayList<Record>();
 		
 		try {
 		
 			@SuppressWarnings("unchecked")
-			List<Object[]> resources = entityManager.createNativeQuery(selectQuery).getResultList();
+			List<Object[]> records = entityManager.createNativeQuery(selectQuery).getResultList();
 			
-			for(Object[] resource : resources) {
-				typeArray.add((String) resource[0]);
-				keysArray.add((String) resource[1]);
-				keyValuesArray.add((String) resource[2]);
-				dataTypeArray.add((String) resource[3]);
+			for(Object[] record : records) {
+				typeArray.add((String) record[0]);
+				typeIdArray.add((Integer) record[1]);
+				keysArray.add((String) record[2]);
+				keyValuesArray.add((String) record[3]);
+				dataTypesArray.add((String) record[4]);
 			}
 			
 			for(int i = 0; i < typeArray.size(); i++) {
 				Record record = new Record();
-				Resource resource = new Resource();
-				
-				resource.setRecordId(record.getId());
 				
 				record.setType(typeArray.get(i));
+				record.setTypeId(typeIdArray.get(i));
 				record.setKeys(keysArray.get(i));
 				record.setKeyValues(keyValuesArray.get(i));
-				record.setDataType(dataTypeArray.get(i));
+				record.setDataTypes(dataTypesArray.get(i));
 				
-				resourceRecords.put(resource, record);
+				resources.add(record);
 			}
 			
 		} catch (Exception ex) {
@@ -59,42 +62,85 @@ public class RecordRepositoryImpl implements RecordCustomMethods {
 			
 		}
 		
-		return resourceRecords;
+		return resources;
 	}
 	
 	@Override
-	public Record findResourceById(long resourceId) {
-		String selectRecordIdQuery = "SELECT recordId FROM resource WHERE id ='" + resourceId + "'";
-		int recordId = 0;
-		Record record = new Record();
+	public Record findResourceById(int resourceId) {
+		String selectQuery = "SELECT type, type_id, keys, key_values, data_types FROM record WHERE type = 'resource' AND type_id = '" + resourceId + "'";
+		Record resource = new Record();
 		
 		try {
 			
-			recordId = (int) entityManager.createNativeQuery(selectRecordIdQuery, Integer.class).getSingleResult();
-			if (recordId > 0) {
-				String selectResourceQuery = "SELECT type, keys, key_values, data_type FROM record WHERE type = 'resource' AND id='" + recordId + "'";
-				
-				try {
-				
-					@SuppressWarnings("unchecked")
-					List<Object[]> recordList = entityManager.createNativeQuery(selectResourceQuery).getResultList();
+			@SuppressWarnings("unchecked")
+			List<Object[]> records = entityManager.createNativeQuery(selectQuery).getResultList();
 					
-					for (Object[] recordItem : recordList) {
-						record.setType((String) recordItem[0]);
-						record.setKeys((String) recordItem[1]);
-						record.setKeyValues((String) recordItem[2]);
-						record.setDataType((String) recordItem[3]);
-					}
+			for (Object[] record : records) {
+				resource.setType((String) record[0]);
+				resource.setTypeId((Integer) record[1]);
+				resource.setKeys((String) record[2]);
+				resource.setKeyValues((String) record[3]);
+				resource.setDataTypes((String) record[4]);
+			}
 					
-				} catch (Exception ex) {
+		} catch (Exception ex) {
 				
-					ex.printStackTrace();
+			ex.printStackTrace();
+				
+		}
+		
+		return resource;
+	}
+	
+	@Override
+	@Transactional
+	public Record updateResourceById(int resourceId, Record record) {		
+		String selectQuery = "SELECT type, keys, key_values, data_types FROM record WHERE type = 'resource' AND type_id = '" + resourceId + "'";
+		
+		try {
+			
+			@SuppressWarnings("unchecked")
+			List<Object[]> recordList = entityManager.createNativeQuery(selectQuery).getResultList();
+			
+			String updateQuery = "UPDATE record SET ";
+			
+			for (Object[] recordItem : recordList) {
+				if (!(((String) recordItem[0]).equals(record.getType()))) {
+					
+					updateQuery += " type = '" + record.getType() + "',";
 					
 				}
+				if (!(((String) recordItem[1]).equals(record.getKeys()))) {
+					
+					updateQuery += " keys = '" + record.getKeys() + "',";
+					
+				}
+				if (!(((String) recordItem[2]).equals(record.getKeyValues()))) {
+					
+					updateQuery += " key_values = '" + record.getKeyValues() + "',";
+					
+				}
+				if (!(((String) recordItem[3]).equals(record.getDataTypes()))) {
+					
+					updateQuery += " data_types = '" + record.getDataTypes() + "'";
+					
+				}
+				
+				updateQuery += " WHERE type = 'resource' AND type_id = '" + resourceId + "'";
 			}
-		
+			
+			try {
+				
+				entityManager.createNativeQuery(updateQuery).executeUpdate();
+				
+			} catch (Exception ex) {
+			
+				ex.printStackTrace();
+				
+			}
+			
 		} catch (Exception ex) {
-		
+			
 			ex.printStackTrace();
 			
 		}
@@ -103,13 +149,36 @@ public class RecordRepositoryImpl implements RecordCustomMethods {
 	}
 	
 	@Override
-	public Record updateResourceById(long resourceId, Record record) {
-		return null;
-	}
-	
-	@Override
-	public Record deleteResourceById(long resourceId) {
-		return null;
+	@Transactional
+	public Record deleteResourceById(int resourceId) {
+		String selectRecordQuery = "SELECT type, type_id, keys, key_values, data_types FROM record WHERE type = 'resource' AND type_id = '" + resourceId + "'";
+		String deleteRecordQuery = "DELETE FROM record WHERE type = 'resource' AND type_id = '" + resourceId + "'";
+		String deleteResourceQuery = "DELETE FROM resource WHERE id = '" + resourceId + "'";
+		Record record = new Record();
+		
+		try {
+			
+			List<Object[]> list = entityManager.createNativeQuery(selectRecordQuery).getResultList();
+			
+			for (Object[] item : list) {
+				record.setType((String) item[0]);
+				record.setTypeId((Integer) item[1]);
+				record.setKeys((String) item[2]);
+				record.setKeyValues((String) item[3]);
+				record.setDataTypes((String) item[4]);
+			}
+			
+			entityManager.createNativeQuery(deleteRecordQuery).executeUpdate();
+			
+			entityManager.createNativeQuery(deleteResourceQuery).executeUpdate();
+				
+		} catch (Exception ex) {
+		
+			ex.printStackTrace();
+		
+		}
+		
+		return record;
 	}
 }
 
