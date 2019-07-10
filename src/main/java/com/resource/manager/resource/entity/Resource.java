@@ -9,8 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 @Entity
 @Table(name = "resource")
 public class Resource implements Serializable {
