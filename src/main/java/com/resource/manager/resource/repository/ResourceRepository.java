@@ -5,4 +5,4 @@ import com.resource.manager.resource.entity.Resource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ResourceRepository extends BaseRepository<Resource, Long> {}
+public interface ResourceRepository extends BaseRepository<Resource, Integer> {}

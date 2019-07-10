@@ -1,8 +1,12 @@
 package com.resource.manager.resource.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.resource.manager.resource.entity.Project;
 import com.resource.manager.resource.entity.Record;
 import com.resource.manager.resource.repository.ProjectRepository;
 import com.resource.manager.resource.repository.RecordRepository;
@@ -12,8 +16,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ProjectService {
-    private final RecordRepository recordRepository;
-    private final ProjectRepository projectRepository;
+    @Autowired
+    private RecordRepository recordRepository;
+    
+    @Autowired
+    private ProjectRepository projectRepository;
 
     @Autowired
     public ProjectService(RecordRepository recordRepository, ProjectRepository projectRepository) {
@@ -22,27 +29,66 @@ public class ProjectService {
     }
 
     @SuppressWarnings({"rawtypes"})
-    public Map saveResourceRecord(Record record) {
-        return null;
+    public Map saveProjectRecord(Record record) {
+        Project project = new Project();
+        project.setVersionNumber(record.getVersion());
+        Project newProject = projectRepository.save(project);
+
+        record.setTypeId(newProject.getId());
+        Record newRecord = recordRepository.save(record);
+
+        return convertProjectToMap(newRecord);
     }
 
-    @SuppressWarnings({"rawtypes"})
-    public List findAllProject() {
-        return null;
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public List findAllProjects() {
+        List<Record> projects = recordRepository.findAllProjects();
+
+        List myArr = new ArrayList();
+
+        for (Record project : projects) {
+            myArr.add(convertProjectToMap(project));
+        }
+        return myArr;
     }
 
     @SuppressWarnings({"rawtypes"})
     public Map findProjectById(int projectId) {
-        return null;
+        Record project = recordRepository.findProjectById(projectId);
+        return convertProjectToMap(project);
     }
 
     @SuppressWarnings({"rawtypes"})
     public Map updateProjectById(int projectId, Record record) {
-        return null;
+        Record updatedProject = recordRepository.updateProjectById(projectId, record);
+        return convertProjectToMap(updatedProject);
     }
 
     @SuppressWarnings({"rawtypes"})
     public Map deleteProjectById(int projectId) {
-        return null;
+        Record deletedProject = recordRepository.deleteProjectById(projectId);
+        return convertProjectToMap(deletedProject);
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private Map convertProjectToMap(Record project) {
+        Map projectMap = new LinkedHashMap();
+
+        List<String> keysList = new ArrayList<String>(Arrays.asList(project.getKeys().split(", ")));
+        List<String> valuesList = new ArrayList<String>(Arrays.asList(project.getKeyValues().split(", ")));
+        List<String> dataTypesList = new ArrayList<String>(Arrays.asList(project.getDataTypes().split(", ")));
+
+        projectMap.put("id", project.getTypeId());
+        projectMap.put("type", project.getType());
+
+        for (int i = 0; i < valuesList.size(); i++) {
+            Map<String, String> myValuesMap = new LinkedHashMap<String, String>();
+
+            myValuesMap.put("value", valuesList.get(i));
+            myValuesMap.put("dataType", dataTypesList.get(i));
+
+            projectMap.put(keysList.get(i), myValuesMap);
+        }
+        return projectMap;
     }
 }

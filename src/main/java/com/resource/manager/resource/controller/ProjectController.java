@@ -32,13 +32,13 @@ public class ProjectController {
     @PostMapping
     @SuppressWarnings({"rawtypes"})
     public @ResponseBody Map createProjectRecord(@Valid @RequestBody Record record) {
-        return projectService.saveResourceRecord(record);
+        return projectService.saveProjectRecord(record);
     }
 
     @GetMapping
     @SuppressWarnings({"rawtypes"})
     public List getAllProjects() {
-        return projectService.findAllProject();
+        return projectService.findAllProjects();
     }
 
     @GetMapping("/{id}")
