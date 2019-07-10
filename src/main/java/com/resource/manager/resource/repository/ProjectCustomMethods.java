@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.resource.manager.resource.entity.Record;
 
-public interface ProjectRepositoryCustom {
+public interface ProjectCustomMethods {
 
     public List<Record> findAllProjects();
 

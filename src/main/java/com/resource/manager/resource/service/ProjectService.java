@@ -21,22 +21,27 @@ public class ProjectService {
         this.projectRepository = projectRepository;
     }
 
+    @SuppressWarnings({"rawtypes"})
     public Map saveResourceRecord(Record record) {
         return null;
     }
 
+    @SuppressWarnings({"rawtypes"})
     public List findAllProject() {
         return null;
     }
 
+    @SuppressWarnings({"rawtypes"})
     public Map findProjectById(int projectId) {
         return null;
     }
 
+    @SuppressWarnings({"rawtypes"})
     public Map updateProjectById(int projectId, Record record) {
         return null;
     }
 
+    @SuppressWarnings({"rawtypes"})
     public Map deleteProjectById(int projectId) {
         return null;
     }

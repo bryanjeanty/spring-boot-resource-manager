@@ -30,26 +30,31 @@ public class ProjectController {
     }
 
     @PostMapping
+    @SuppressWarnings({"rawtypes"})
     public @ResponseBody Map createProjectRecord(@Valid @RequestBody Record record) {
         return projectService.saveResourceRecord(record);
     }
 
     @GetMapping
+    @SuppressWarnings({"rawtypes"})
     public List getAllProjects() {
         return projectService.findAllProject();
     }
 
     @GetMapping("/{id}")
+    @SuppressWarnings({"rawtypes"})
     public @ResponseBody Map getProjectById(@PathVariable("id") int projectId) {
         return projectService.findProjectById(projectId);
     }
 
     @PutMapping("/{id}")
+    @SuppressWarnings({"rawtypes"})
     public @ResponseBody Map updateProjectById(@PathVariable("id") int projectId, @Valid @RequestBody Record record) {
         return projectService.updateProjectById(projectId, record);
     }
 
     @DeleteMapping("/{id}")
+    @SuppressWarnings({"rawtypes"})
     public @ResponseBody Map deleteProjectById(@PathVariable("id") int projectId) {
         return projectService.deleteProjectById(projectId);
     }

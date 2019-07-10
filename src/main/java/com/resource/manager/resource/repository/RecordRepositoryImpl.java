@@ -146,6 +146,7 @@ public class RecordRepositoryImpl implements RecordCustomMethods {
 	
 	@Override
 	@Transactional
+    @SuppressWarnings({"unchecked"})
 	public Record deleteResourceById(int resourceId) {
 		String selectRecordQuery = "SELECT type, type_id, keys, key_values, data_types FROM record WHERE type = 'resource' AND type_id = '" + resourceId + "'";
 		String deleteRecordQuery = "DELETE FROM record WHERE type = 'resource' AND type_id = '" + resourceId + "'";
@@ -176,10 +177,27 @@ public class RecordRepositoryImpl implements RecordCustomMethods {
 		
 		return record;
 	}
+
+    @Override
+    public List<Record> findAllProjects() {
+        return null;
+    }
+
+    @Override
+    public Record findProjectById(int projectId) {
+        return null;
+    }
+
+    @Override
+    public Record updateProjectById(int projectId) {
+        return null;
+    }
+
+    @Override
+    public Record deleteProjectById(int projectId) {
+        return null;
+    }
 }
-
-
-
 
 
 

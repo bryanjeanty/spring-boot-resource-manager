@@ -30,26 +30,31 @@ public class ResourceController {
     }
 
     @PostMapping
+    @SuppressWarnings({"rawtypes"})
     public @ResponseBody Map createResourceRecord(@Valid @RequestBody Record record) {
     	return resourceService.saveResourceRecord(record);
     }
 
     @GetMapping
+    @SuppressWarnings({"rawtypes"})
     public List getAllResources() {
         return resourceService.findAllResources();
     }
 
     @GetMapping("/{id}")
+    @SuppressWarnings({"rawtypes"})
     public @ResponseBody Map getResourceById(@PathVariable("id") int resourceId) {
         return resourceService.findResourceById(resourceId);
     }
     
     @PutMapping("/{id}")
+    @SuppressWarnings({"rawtypes"})
     public @ResponseBody Map updateResourceById(@PathVariable("id") int resourceId, @Valid @RequestBody Record record) {
     	return resourceService.updateResourceById(resourceId, record);
     }
     
     @DeleteMapping("/{id}")
+    @SuppressWarnings({"rawtypes"})
     public @ResponseBody Map deleteResourceById(@PathVariable("id") int resourceId) {
     	return resourceService.deleteResourceById(resourceId);
     }
