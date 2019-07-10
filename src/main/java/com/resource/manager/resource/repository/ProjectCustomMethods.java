@@ -10,7 +10,7 @@ public interface ProjectCustomMethods {
 
     public Record findProjectById(int projectId);
 
-    public Record updateProjectById(int projectId);
+    public Record updateProjectById(int projectId, Record record);
 
     public Record deleteProjectById(int projectId);
 }

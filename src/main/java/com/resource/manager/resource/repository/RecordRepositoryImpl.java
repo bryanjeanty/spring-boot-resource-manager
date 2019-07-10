@@ -189,7 +189,7 @@ public class RecordRepositoryImpl implements RecordCustomMethods {
     }
 
     @Override
-    public Record updateProjectById(int projectId) {
+    public Record updateProjectById(int projectId, Record record) {
         return null;
     }
 
