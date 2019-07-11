@@ -10,7 +10,7 @@ public class AccountWithIdNotFoundException extends RuntimeException {
     private int accountId;
 
     public AccountWithIdNotFoundException(int accountId) {
-        super(String.format("Account with id [%s] was not found!", accountId));
+        super(String.format("Account with id [%d] was not found!", accountId));
         this.accountId = accountId;
     }
 

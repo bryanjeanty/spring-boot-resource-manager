@@ -24,7 +24,7 @@ public class Record implements Serializable {
     @JsonProperty("type")
     @Column(name = "type")
     private String type;
-    
+
     @JsonProperty("typeId")
     @Column(name = "type_id")
     private int typeId;
@@ -47,6 +47,9 @@ public class Record implements Serializable {
     @JsonProperty("editable")
     private boolean editable;
 
+    @Column(name = "encrypted_filename")
+    private String encryptedFilename;
+
     public Record() {
         super();
     }
@@ -58,9 +61,9 @@ public class Record implements Serializable {
     public String getType() {
         return type;
     }
-    
+
     public int getTypeId() {
-    	return typeId;	
+        return typeId;
     }
 
     public String getKeys() {
@@ -83,12 +86,16 @@ public class Record implements Serializable {
         return editable;
     }
 
+    public String getEncryptedFilename() {
+        return encryptedFilename;
+    }
+
     public void setType(String type) {
         this.type = type;
     }
-    
+
     public void setTypeId(int typeId) {
-    	this.typeId = typeId;
+        this.typeId = typeId;
     }
 
     public void setKeys(String keys) {
@@ -109,5 +116,9 @@ public class Record implements Serializable {
 
     public void setEditable(boolean editable) {
         this.editable = editable;
+    }
+
+    public void setEncryptedFilename(String encryptedFilename) {
+        this.encryptedFilename = encryptedFilename;
     }
 }

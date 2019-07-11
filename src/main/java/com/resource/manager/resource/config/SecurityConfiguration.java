@@ -58,6 +58,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                 // all other url requests need to be authenticated
                 .anyRequest().authenticated().and()
+                
+                //custom login
+                .formLogin().loginPage("/api/v1/login").permitAll().and()
 
                 // add JWT filters (1. authentication, 2. authorization) to validate
                 // tokens with every request
