@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/resources")
+@RequestMapping("/api/v1/auth/resources")
 public class ResourceController {
     private final ResourceService resourceService;
 
