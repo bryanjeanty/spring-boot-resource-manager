@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/projects")
+@RequestMapping("/api/v1/auth/projects")
 public class ProjectController {
     private final ProjectService projectService;
 

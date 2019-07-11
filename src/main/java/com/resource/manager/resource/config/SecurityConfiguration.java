@@ -50,10 +50,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 // authorization requests configuration
                 // allow any users to access only login and home pages
-                .authorizeRequests().antMatchers("/").permitAll().antMatchers("/login*").permitAll()
+                .authorizeRequests().antMatchers("/").permitAll().antMatchers("/api/v1/login**").permitAll()
+                .antMatchers("/api/v1/register**").permitAll()
 
                 // only authenticated users can access other routes in the application
-                .antMatchers("/api/**").authenticated().antMatchers("/resource/**").authenticated()
+                .antMatchers("/api/v1/auth/**").authenticated()
 
                 // all other url requests need to be authenticated
                 .anyRequest().authenticated().and()
@@ -64,7 +65,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), this.accountRepository))
 
                 // redirect the user to the login page if they fail to authenticate
-                .exceptionHandling().accessDeniedPage("/login");
+                .exceptionHandling().accessDeniedPage("/api/v1/login");
     }
 
     // create a bean to encode the user details for authentication purposes

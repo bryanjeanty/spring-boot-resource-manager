@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/accounts")
+@RequestMapping("/api/v1")
 public class AccountController {
     private final AccountService accountService;
 
@@ -35,7 +35,7 @@ public class AccountController {
       this.accountService = accountService;
     }
 
-  @PostMapping
+  @PostMapping("/register")
   public ResponseEntity<String> createAccount(@Valid @RequestBody Account account) {
     String tempPassword = account.getPassword();
     account.setPassword(passwordEncoder.encode(tempPassword));
@@ -43,17 +43,17 @@ public class AccountController {
     return new ResponseEntity<>("Account successfully created", HttpStatus.CREATED);
   }
 
-  @GetMapping
+  @GetMapping("/auth/accounts")
   public List<Account> getAllAccounts() {
     return accountService.findAll();
   }
 
-  @GetMapping("/{id}")
+  @GetMapping("/auth/accounts/{id}")
   public Account getAccountById(@PathVariable("id") int accountId) {
     return accountService.findById(accountId).orElseThrow(() -> new AccountWithIdNotFoundException(accountId));
   }
 
-  @PutMapping("/{id}")
+  @PutMapping("/auth/accounts/{id}")
   public ResponseEntity<String> updateAccountById(@PathVariable("id") int accountId,
       @Valid @NotNull @RequestBody Account updates) {
     Account updatedAccount = accountService.findById(accountId)
@@ -65,7 +65,7 @@ public class AccountController {
     return new ResponseEntity<>("Account successfully updated", HttpStatus.OK);
   }
 
-  @DeleteMapping("/{id}")
+  @DeleteMapping("/auth/accounts/{id}")
   public ResponseEntity<String> deleteAccountById(@PathVariable("id") int accountId) {
     Account account = accountService.findById(accountId)
         .orElseThrow(() -> new AccountWithIdNotFoundException(accountId));
