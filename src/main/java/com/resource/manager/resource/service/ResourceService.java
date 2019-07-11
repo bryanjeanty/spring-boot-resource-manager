@@ -37,7 +37,7 @@ public class ResourceService {
 		record.setTypeId(newResource.getId());
 		Record newRecord = recordRepository.save(record);
 						
-		return getMapFromResource(newRecord);
+		return convertResourceToMap(newRecord);
 	}
 	
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -46,7 +46,7 @@ public class ResourceService {
 		List myArr = new ArrayList();
 		
 		for(Record resource : resources) {
-            myArr.add(getMapFromResource(resource));
+            myArr.add(convertResourceToMap(resource));
 		}
 		
 		return myArr;
@@ -55,31 +55,31 @@ public class ResourceService {
     @SuppressWarnings({"rawtypes"})
 	public Map findResourceById(int resourceId) {
 		Record resource = recordRepository.findResourceById(resourceId);
-		return getMapFromResource(resource);
+		return convertResourceToMap(resource);
     }
 
     @SuppressWarnings({"rawtypes"})
     public Map updateResourceById(int resourceId, Record record) {
         Record updatedResource = recordRepository.updateResourceById(resourceId, record);
-        return getMapFromResource(updatedResource);
+        return convertResourceToMap(updatedResource);
     }
 
     @SuppressWarnings({"rawtypes"})
     public Map deleteResourceById(int resourceId) {
         Record deletedResource = recordRepository.deleteResourceById(resourceId);
-        return getMapFromResource(deletedResource);
+        return convertResourceToMap(deletedResource);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private Map getMapFromResource(Record resource) {
-        Map myMap = new LinkedHashMap();
+    private Map convertResourceToMap(Record resource) {
+        Map resourceMap = new LinkedHashMap();
 
         List<String> keysList = new ArrayList<String>(Arrays.asList(resource.getKeys().split(", ")));
         List<String> valuesList = new ArrayList<String>(Arrays.asList(resource.getKeyValues().split(", ")));
         List<String> dataTypesList = new ArrayList<String>(Arrays.asList(resource.getDataTypes().split(", ")));
 
-        myMap.put("id", resource.getTypeId());
-        myMap.put("type", resource.getType());
+        resourceMap.put("id", resource.getTypeId());
+        resourceMap.put("type", resource.getType());
 
         for (int i = 0; i < valuesList.size(); i++) {
             Map<String, String> myValuesMap = new LinkedHashMap<String, String>();
@@ -87,8 +87,8 @@ public class ResourceService {
             myValuesMap.put("value", valuesList.get(i));
             myValuesMap.put("dataType", dataTypesList.get(i));
 
-            myMap.put(keysList.get(i), myValuesMap);
+            resourceMap.put(keysList.get(i), myValuesMap);
         }
-        return myMap;
+        return resourceMap;
     }
 }
