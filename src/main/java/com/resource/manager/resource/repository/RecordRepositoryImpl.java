@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.resource.manager.resource.entity.Record;
 
-public class RecordRepositoryImpl implements RecordCustomMethods {
+public class RecordRepositoryImpl implements RecordCustomMethods, FormulaCustomMethods {
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -321,8 +321,27 @@ public class RecordRepositoryImpl implements RecordCustomMethods {
 		}
 		return record;
     }
-}
 
+    @Override
+    public List<Record> findAllFormulas() {
+        return null;
+    }
+
+    @Override
+    public Record findFormulaById(int formulaId) {
+        return null;
+    }
+
+    @Override
+    public Record updateFormulaById(int formulaId, Record record) {
+        return null;
+    }
+
+    @Override
+    public Record deleteFormulaById(int formulaId) {
+        return null;
+    }
+}
 
 
 
