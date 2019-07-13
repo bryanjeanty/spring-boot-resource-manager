@@ -1,6 +1,8 @@
 package com.resource.manager.resource.controller;
 
 import java.util.List;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -19,11 +21,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
 @RequestMapping("/api/v1")
+@CrossOrigin(origins = "http://localhost:4200")
 public class AccountController {
     private final AccountService accountService;
 
@@ -36,11 +41,16 @@ public class AccountController {
     }
 
   @PostMapping("/register")
-  public ResponseEntity<String> createAccount(@Valid @RequestBody Account account) {
+  public @ResponseBody ResponseEntity<Map> createAccount(@Valid @RequestBody Account account) {
     String tempPassword = account.getPassword();
     account.setPassword(passwordEncoder.encode(tempPassword));
     accountService.save(account);
-    return new ResponseEntity<>("Account successfully created", HttpStatus.CREATED);
+    
+    Map response = new LinkedHashMap();
+    
+    response.put("message", "Account successfully created");
+    response.put("body", account);
+    return ResponseEntity.accepted().body(response);
   }
 
   @GetMapping("/auth/accounts")
@@ -54,7 +64,7 @@ public class AccountController {
   }
 
   @PutMapping("/auth/accounts/{id}")
-  public ResponseEntity<String> updateAccountById(@PathVariable("id") int accountId,
+  public @ResponseBody ResponseEntity<Map> updateAccountById(@PathVariable("id") int accountId,
       @Valid @NotNull @RequestBody Account updates) {
     Account updatedAccount = accountService.findById(accountId)
         .orElseThrow(() -> new AccountWithIdNotFoundException(accountId));
@@ -62,14 +72,24 @@ public class AccountController {
     updatedAccount.setEmail(updates.getEmail());
     updatedAccount.setPassword(passwordEncoder.encode(updates.getPassword()));
     accountService.save(updatedAccount);
-    return new ResponseEntity<>("Account successfully updated", HttpStatus.OK);
+    
+    Map response = new LinkedHashMap();
+    
+    response.put("message", "Account successfully updated");
+    response.put("body", updatedAccount);    
+    return ResponseEntity.ok().body(response);
   }
 
   @DeleteMapping("/auth/accounts/{id}")
-  public ResponseEntity<String> deleteAccountById(@PathVariable("id") int accountId) {
+  public @ResponseBody ResponseEntity<Map> deleteAccountById(@PathVariable("id") int accountId) {
     Account account = accountService.findById(accountId)
         .orElseThrow(() -> new AccountWithIdNotFoundException(accountId));
     accountService.delete(account);
-    return new ResponseEntity<>("Account successfully deleted", HttpStatus.NO_CONTENT);
+    
+    Map response = new LinkedHashMap();
+    
+    response.put("message", "Account successfully deleted");
+    response.put("body", account);
+    return ResponseEntity.noContent().body(response);
   }
 }
