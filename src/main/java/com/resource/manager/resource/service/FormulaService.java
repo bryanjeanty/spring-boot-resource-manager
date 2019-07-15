@@ -67,9 +67,6 @@ public Map deleteFormulaById(int formulaId){
     return convertFormulaToMap(deletedFormula);
 }
 
-
-
-
  @SuppressWarnings({"rawtypes", "unchecked"})
     private Map convertFormulaToMap(Record formula) {
        Map formulaMap= new LinkedHashMap();
