@@ -86,6 +86,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
                 .sign(HMAC512(JwtProperties.SECRET_TOKEN.getBytes()));
 
+        // expose jwt token on client side
+        response.addHeader("Access-Control-Expose-Headers", JwtProperties.HEADER_STRING);
+        
         // add token in the response header
         // user will use this token to access other routes in the application
         response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + token);

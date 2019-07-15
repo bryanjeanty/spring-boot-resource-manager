@@ -74,9 +74,9 @@ public class ProjectService {
     private Map convertProjectToMap(Record project) {
         Map projectMap = new LinkedHashMap();
 
-        List<String> keysList = new ArrayList<String>(Arrays.asList(project.getKeys().split(", ")));
-        List<String> valuesList = new ArrayList<String>(Arrays.asList(project.getKeyValues().split(", ")));
-        List<String> dataTypesList = new ArrayList<String>(Arrays.asList(project.getDataTypes().split(", ")));
+        List<String> keysList = new ArrayList<String>(Arrays.asList(project.getKeys().split(",")));
+        List<String> valuesList = new ArrayList<String>(Arrays.asList(project.getKeyValues().split(",")));
+        List<String> dataTypesList = new ArrayList<String>(Arrays.asList(project.getDataTypes().split(",")));
 
         projectMap.put("id", project.getTypeId());
         projectMap.put("type", project.getType());

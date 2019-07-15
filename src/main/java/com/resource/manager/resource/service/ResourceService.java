@@ -74,9 +74,9 @@ public class ResourceService {
     private Map convertResourceToMap(Record resource) {
         Map resourceMap = new LinkedHashMap();
 
-        List<String> keysList = new ArrayList<String>(Arrays.asList(resource.getKeys().split(", ")));
-        List<String> valuesList = new ArrayList<String>(Arrays.asList(resource.getKeyValues().split(", ")));
-        List<String> dataTypesList = new ArrayList<String>(Arrays.asList(resource.getDataTypes().split(", ")));
+        List<String> keysList = new ArrayList<String>(Arrays.asList(resource.getKeys().split(",")));
+        List<String> valuesList = new ArrayList<String>(Arrays.asList(resource.getKeyValues().split(",")));
+        List<String> dataTypesList = new ArrayList<String>(Arrays.asList(resource.getDataTypes().split(",")));
 
         resourceMap.put("id", resource.getTypeId());
         resourceMap.put("type", resource.getType());

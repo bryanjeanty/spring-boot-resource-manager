@@ -34,8 +34,7 @@ import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@SpringBootApplication(scanBasePackages = {
-		"com.resource.manager.resource" }, exclude = JpaRepositoriesAutoConfiguration.class)
+@SpringBootApplication(scanBasePackages = { "com.resource.manager.resource" }, exclude = JpaRepositoriesAutoConfiguration.class)
 @EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class })
 @EnableJpaRepositories(basePackages = "com.resource.manager.resource.repository", repositoryBaseClass = BaseRepositoryImpl.class)
 @EnableTransactionManagement
@@ -72,7 +71,7 @@ public class Main extends SpringBootServletInitializer {
   public static Connection getConnection() throws SQLException {
       return hds.getConnection();
   }
-
+                                                                       
   @Bean
   public JpaVendorAdapter jpaVendorAdapter() {
       HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
@@ -95,8 +94,8 @@ public class Main extends SpringBootServletInitializer {
   @Bean
   public JpaTransactionManager transactionManager(EntityManagerFactory emf) {
       return new JpaTransactionManager(emf);
-  }
-
+  }                
+                              
   @Bean
   public ServletWebServerFactory servletContainer() {
       // enable SSL Traffic in the application

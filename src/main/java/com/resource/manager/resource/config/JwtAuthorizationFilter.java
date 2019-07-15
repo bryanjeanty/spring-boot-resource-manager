@@ -22,6 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
