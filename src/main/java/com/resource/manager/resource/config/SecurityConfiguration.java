@@ -1,5 +1,8 @@
 package com.resource.manager.resource.config;
 
+import java.util.Collections;
+import java.util.Arrays;
+
 import com.resource.manager.resource.repository.AccountRepository;
 import com.resource.manager.resource.service.AccountDetailsService;
 
@@ -12,6 +15,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -40,17 +46,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-
+    protected void configure(HttpSecurity http) throws Exception {  
+    	/* Allow cors */
+    	 http.cors().and()
+    	
         // Allow only authorized users to make requests
         // to other pages using JWT based authentication
 
         // we remove CSRF and state in session because we do not require
         // them in JWT authentication
-        http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+        .csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 // authorization requests configuration
                 // allow any users to access only login and home pages
-                .authorizeRequests().antMatchers("/").permitAll().antMatchers("/api/v1/login**").permitAll()
+                .authorizeRequests().antMatchers("/").permitAll()
+                .antMatchers("/api/v1/login**").permitAll()
                 .antMatchers("/api/v1/register**").permitAll()
 
                 // only authenticated users can access other routes in the application
@@ -69,6 +78,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                 // redirect the user to the login page if they fail to authenticate
                 .exceptionHandling().accessDeniedPage("/api/v1/login");
+    }
+    
+	@Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		CorsConfiguration config = new CorsConfiguration();
+		
+		config.setAllowCredentials(true);
+		config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+		config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization"));
+		config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"));
+		
+		source.registerCorsConfiguration("/**", config);
+        
+        return source;
     }
 
     // create a bean to encode the user details for authentication purposes

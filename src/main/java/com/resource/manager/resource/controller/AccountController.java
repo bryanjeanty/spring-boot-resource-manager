@@ -24,11 +24,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
 @RequestMapping("/api/v1")
-@CrossOrigin(origins = "http://localhost:4200")
 public class AccountController {
     private final AccountService accountService;
 
@@ -90,6 +88,6 @@ public class AccountController {
     
     response.put("message", "Account successfully deleted");
     response.put("body", account);
-    return ResponseEntity.noContent().body(response);
+    return ResponseEntity.ok().body(response);
   }
 }
