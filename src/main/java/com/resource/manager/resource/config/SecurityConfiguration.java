@@ -88,8 +88,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		
 		config.setAllowCredentials(true);
 		config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-		config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization"));
-		config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"));
+		config.setAllowedHeaders(Arrays.asList("Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"));
+		config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
 		
 		source.registerCorsConfiguration("/**", config);
         
