@@ -125,6 +125,7 @@ public class RecordRepositoryImpl implements RecordCustomMethods, FormulaCustomM
 
                 }
 
+                record.setTypeId(resourceId);
                 updateQuery += " WHERE type = 'resource' AND type_id = '" + resourceId + "'";
             }
 
