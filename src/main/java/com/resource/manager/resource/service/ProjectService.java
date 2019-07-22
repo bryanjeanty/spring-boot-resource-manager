@@ -61,8 +61,9 @@ public class ProjectService {
 
     @SuppressWarnings({"rawtypes"})
     public Map updateProjectById(int projectId, Record record) {
-    	Project updatedProject = projectRepository.findById(projectId)
-    											.orElseThrow(() -> new ProjectNotFoundException(projectId));
+    	Project updatedProject = projectRepository
+    									.findById(projectId)
+    									.orElseThrow(() -> new ProjectNotFoundException(projectId));
     	updatedProject.setVersionNumber(record.getVersion());
     	projectRepository.save(updatedProject);
     	

@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.resource.manager.resource.entity.Record;
 
-public class RecordRepositoryImpl implements RecordCustomMethods, FormulaCustomMethods {
+public class RecordRepositoryImpl implements RecordCustomMethods {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -110,16 +110,25 @@ public class RecordRepositoryImpl implements RecordCustomMethods, FormulaCustomM
 
                 }
                 if (!(((String) recordItem[1]).equals(record.getKeys()))) {
+                	if (updateQuery.contains("type")) {
+                		updateQuery += ",";
+                	}
 
                     updateQuery += " keys = '" + record.getKeys() + "',";
 
                 }
                 if (!(((String) recordItem[2]).equals(record.getKeyValues()))) {
+                	if (updateQuery.contains("key") || updateQuery.contains("type")) {
+                		updateQuery += ",";
+                	}
 
                     updateQuery += " key_values = '" + record.getKeyValues() + "',";
 
                 }
                 if (!(((String) recordItem[3]).equals(record.getDataTypes()))) {
+                	if (updateQuery.contains("key_values") || updateQuery.contains("key") || updateQuery.contains("type")) {
+                		updateQuery += ",";
+                	}
 
                     updateQuery += " data_types = '" + record.getDataTypes() + "'";
 
@@ -273,14 +282,23 @@ public class RecordRepositoryImpl implements RecordCustomMethods, FormulaCustomM
                 }
 
                 if (!(((String) recordItem[1]).equals(record.getKeys()))) {
+                	if (updateQuery.contains("type")) {
+                		updateQuery += ",";
+                	}
                     updateQuery += " keys = '" + record.getKeys() + "',";
                 }
 
                 if (!(((String) recordItem[2]).equals(record.getKeyValues()))) {
+                	if (updateQuery.contains("keys") || updateQuery.contains("type")) {
+                		updateQuery += ",";
+                	}
                     updateQuery += " key_values = '" + record.getKeyValues() + "',";
                 }
 
                 if (!(((String) recordItem[3]).equals(record.getDataTypes()))) {
+                	if (updateQuery.contains("key_values") || updateQuery.contains("keys") || updateQuery.contains("type")) {
+                		updateQuery += ",";
+                	}
                     updateQuery += " data_types = '" + record.getDataTypes() + "'";
                 }
 
@@ -420,25 +438,35 @@ public class RecordRepositoryImpl implements RecordCustomMethods, FormulaCustomM
             for (Object[] recordItem : recordList) {
                 if (!(((String) recordItem[0]).equals(record.getType()))) {
 
-                    updateQuery += " type = '" + record.getType() + "',";
+                    updateQuery += " type = '" + record.getType() + "'";
 
                 }
                 if (!(((String) recordItem[1]).equals(record.getKeys()))) {
+                	if (updateQuery.contains("type")) {
+                		updateQuery += ",";
+                	}
 
-                    updateQuery += " keys = '" + record.getKeys() + "',";
+                    updateQuery += " keys = '" + record.getKeys() + "'";
 
                 }
                 if (!(((String) recordItem[2]).equals(record.getKeyValues()))) {
+                	if (updateQuery.contains("keys") || updateQuery.contains("type")) {
+                		updateQuery += ",";
+                	}
 
-                    updateQuery += " key_values = '" + record.getKeyValues() + "',";
+                    updateQuery += " key_values = '" + record.getKeyValues() + "'";
 
                 }
                 if (!(((String) recordItem[3]).equals(record.getDataTypes()))) {
+                	if (updateQuery.contains("key_values") || updateQuery.contains("keys") || updateQuery.contains("type")) {
+                		updateQuery += ",";
+                	}
                   
                     updateQuery += " data_types = '" + record.getDataTypes() + "'";
 
                 }
 
+                record.setTypeId(formulaId);
                 updateQuery += " WHERE type = 'formula' AND type_id = '" + formulaId + "'";
             }
 
