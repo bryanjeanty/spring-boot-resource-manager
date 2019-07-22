@@ -278,6 +278,7 @@ public class RecordRepositoryImpl implements RecordCustomMethods {
 					updateQuery += " data_types = '" + record.getDataTypes() + "'";
 				}
 				
+				record.setTypeId(projectId);
 				updateQuery += " WHERE type = 'project' AND type_id = '" + projectId + "'";
 			}
 			
