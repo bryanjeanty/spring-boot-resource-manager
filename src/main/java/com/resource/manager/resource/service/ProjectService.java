@@ -10,6 +10,7 @@ import com.resource.manager.resource.entity.Project;
 import com.resource.manager.resource.entity.Record;
 import com.resource.manager.resource.repository.ProjectRepository;
 import com.resource.manager.resource.repository.RecordRepository;
+import com.resource.manager.resource.exception.ProjectNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,8 +61,13 @@ public class ProjectService {
 
     @SuppressWarnings({"rawtypes"})
     public Map updateProjectById(int projectId, Record record) {
-        Record updatedProject = recordRepository.updateProjectById(projectId, record);
-        return convertProjectToMap(updatedProject);
+    	Project updatedProject = projectRepository.findById(projectId)
+    											.orElseThrow(() -> new ProjectNotFoundException(projectId));
+    	updatedProject.setVersionNumber(record.getVersion());
+    	projectRepository.save(updatedProject);
+    	
+        Record updatedRecord = recordRepository.updateProjectById(updatedProject.getId(), record);
+        return convertProjectToMap(updatedRecord);
     }
 
     @SuppressWarnings({"rawtypes"})
@@ -72,6 +78,8 @@ public class ProjectService {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     private Map convertProjectToMap(Record project) {
+    	
+    	
         Map projectMap = new LinkedHashMap();
 
         List<String> keysList = new ArrayList<String>(Arrays.asList(project.getKeys().split(",")));

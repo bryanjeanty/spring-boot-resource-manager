@@ -283,6 +283,7 @@ public class RecordRepositoryImpl implements RecordCustomMethods, FormulaCustomM
                     updateQuery += " data_types = '" + record.getDataTypes() + "'";
                 }
 
+                record.setTypeId(projectId);
                 updateQuery += " WHERE type = 'project' AND type_id = '" + projectId + "'";
             }
 
@@ -432,7 +433,7 @@ public class RecordRepositoryImpl implements RecordCustomMethods, FormulaCustomM
 
                 }
                 if (!(((String) recordItem[3]).equals(record.getDataTypes()))) {
-
+                  
                     updateQuery += " data_types = '" + record.getDataTypes() + "'";
 
                 }
