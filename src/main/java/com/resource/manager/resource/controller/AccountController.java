@@ -12,7 +12,6 @@ import com.resource.manager.resource.exception.AccountWithIdNotFoundException;
 import com.resource.manager.resource.service.AccountService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,6 +38,7 @@ public class AccountController {
     }
 
   @PostMapping("/register")
+  @SuppressWarnings({ "unchecked", "rawtypes"})  
   public @ResponseBody ResponseEntity<Map> createAccount(@Valid @RequestBody Account account) {
     String tempPassword = account.getPassword();
     account.setPassword(passwordEncoder.encode(tempPassword));
@@ -62,6 +62,7 @@ public class AccountController {
   }
 
   @PutMapping("/auth/accounts/{id}")
+  @SuppressWarnings({ "unchecked", "rawtypes"})  
   public @ResponseBody ResponseEntity<Map> updateAccountById(@PathVariable("id") int accountId,
       @Valid @NotNull @RequestBody Account updates) {
     Account updatedAccount = accountService.findById(accountId)
@@ -79,6 +80,7 @@ public class AccountController {
   }
 
   @DeleteMapping("/auth/accounts/{id}")
+  @SuppressWarnings({ "unchecked", "rawtypes"})  
   public @ResponseBody ResponseEntity<Map> deleteAccountById(@PathVariable("id") int accountId) {
     Account account = accountService.findById(accountId)
         .orElseThrow(() -> new AccountWithIdNotFoundException(accountId));
