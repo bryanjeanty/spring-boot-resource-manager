@@ -41,7 +41,7 @@ public class FormulaService {
     }
     @SuppressWarnings({"rawtypes","unchecked"})
     public List findAllFormulas(){
-        List<Record> formulas= recordRepository.findAllResources();
+        List<Record> formulas= recordRepository.findAllFormulas();
         List myArr = new ArrayList();
         for(Record formula: formulas){
             myArr.add(convertFormulaToMap(formula));

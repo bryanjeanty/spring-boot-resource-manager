@@ -467,7 +467,7 @@ public class RecordRepositoryImpl implements RecordCustomMethods, FormulaCustomM
         String selectRecordQuery = "SELECT type, type_id, keys, key_values, data_types FROM record WHERE type = 'formula' AND type_id = '"
                 + formulaId + "'";
         String deleteRecordQuery = "DELETE FROM record WHERE type = 'formula' AND type_id = '" + formulaId + "'";
-        String deleteResourceQuery = "DELETE FROM resource WHERE id = '" + formulaId + "'";
+        String deleteResourceQuery = "DELETE FROM formula WHERE id = '" + formulaId + "'";
         Record record = new Record();
 
         try {
