@@ -19,8 +19,11 @@ public class Project implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "version", nullable = false)
-    private int version;
+    @Column(name = "version")
+    private int version = 0;
+    
+    @Column(name = "filename")
+    private String filename = "";
 
     public Project() {}
 
@@ -31,8 +34,16 @@ public class Project implements Serializable {
     public int getVersion() {
         return version;
     }
+    
+    public String getFilename() {
+        return filename;
+    }
 
     public void setVersion(int version) {
         this.version = version;
+    }
+    
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 }

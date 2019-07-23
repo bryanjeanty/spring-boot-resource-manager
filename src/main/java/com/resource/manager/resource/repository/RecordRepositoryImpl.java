@@ -240,6 +240,49 @@ public class RecordRepositoryImpl implements RecordCustomMethods {
     }
     
     @Override
+    public List<Record> findAllProjects(String filename) {
+        String selectQuery = "SELECT type, type_id, keys, key_values, data_types FROM record INNER JOIN project ON record.type_id = project.id WHERE record.type = 'project' AND project.filename = '" + filename + "'";
+
+        List<String> typeArray = new ArrayList<String>();
+        List<Integer> typeIdArray = new ArrayList<Integer>();
+        List<String> keysArray = new ArrayList<String>();
+        List<String> keyValuesArray = new ArrayList<String>();
+        List<String> dataTypesArray = new ArrayList<String>();
+
+        List<Record> projects = new ArrayList<Record>();
+
+        try {
+
+            @SuppressWarnings("unchecked")
+            List<Object[]> records = entityManager.createNativeQuery(selectQuery).getResultList();
+
+            for (Object[] record : records) {
+                typeArray.add((String) record[0]);
+                typeIdArray.add((Integer) record[1]);
+                keysArray.add((String) record[2]);
+                keyValuesArray.add((String) record[3]);
+                dataTypesArray.add((String) record[4]);
+            }
+
+            for (int i = 0; i < typeArray.size(); i++) {
+                Record record = new Record();
+
+                record.setType(typeArray.get(i));
+                record.setTypeId(typeIdArray.get(i));
+                record.setKeys(keysArray.get(i));
+                record.setKeyValues(keyValuesArray.get(i));
+                record.setDataTypes(dataTypesArray.get(i));
+
+                projects.add(record);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return projects;
+    }
+    
+    @Override
     public List<Record> findAllProjects() {
         String selectQuery = "SELECT type, type_id, keys, key_values, data_types FROM record WHERE type = 'project'";
 

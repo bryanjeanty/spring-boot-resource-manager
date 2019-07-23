@@ -9,8 +9,5 @@ import java.util.List;
 public interface UploadService {
 
     public List<Record> saveFileRecords(MultipartFile file);
-
-    public List<Record> getFileRecords(String filename);
-
-    public void deleteFileRecords(String filename);
+    
 }

@@ -1,6 +1,9 @@
 package com.resource.manager.resource.controller;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 import com.resource.manager.resource.entity.Record;
 import com.resource.manager.resource.service.UploadService;
@@ -31,12 +34,15 @@ public class UploadController {
 		List<Record> fileRecordsList = uploadService.saveFileRecords(file);
 		return new ResponseEntity<List<Record>>(fileRecordsList, HttpStatus.OK);
 	}
-
-	/*
-	 * @GetMapping("/{filename}") public @ResponseBody List getAllFileRecords() {
-	 * return null; }
-	 * 
-	 * @DeleteMapping("/{filename}") public ResponseEntity<String>
-	 * deleteRecordsByFilename() { return null; }
-	 */
 }
+
+
+
+
+
+
+
+
+
+
+

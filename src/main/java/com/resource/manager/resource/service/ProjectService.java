@@ -41,7 +41,6 @@ public class ProjectService {
         return convertProjectToMap(version, newRecord);
     }
     
-    // update project custom methods interface & record repository implementation
     @SuppressWarnings({"rawtypes", "unchecked"})
     public List findAllProjects(int version) {
         List<Record> projects = recordRepository.findAllProjects(version);
@@ -55,6 +54,18 @@ public class ProjectService {
     }
     
     @SuppressWarnings({"rawtypes", "unchecked"})
+    public List findAllProjects(String filename) {
+        List<Record> projects = recordRepository.findAllProjects(filename);
+        	
+        List myArr = new ArrayList();
+
+        for (Record project : projects) {
+            myArr.add(convertProjectToMap(filename, project));
+        }
+        return myArr;
+    }
+    
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public List findAllProjects() {    	
     	List<Project> projects = projectRepository.findAll();
         List<Record> projectRecords = recordRepository.findAllProjects();
@@ -62,7 +73,11 @@ public class ProjectService {
         List myArr = new ArrayList();
 
         for (int i = 0; i < projectRecords.size(); i++) {
-            myArr.add(convertProjectToMap(projects.get(i).getVersion(), projectRecords.get(i)));
+        	if (projects.get(i).getVersion() == 0) {
+        		myArr.add(convertProjectToMap(projects.get(i).getFilename(), projectRecords.get(i)));
+        	} else {
+        		myArr.add(convertProjectToMap(projects.get(i).getVersion(), projectRecords.get(i)));
+        	}
         }
         return myArr;
     }
@@ -110,6 +125,31 @@ public class ProjectService {
 
         projectMap.put("id", project.getTypeId());
         projectMap.put("version", version);
+        projectMap.put("type", project.getType());
+
+        for (int i = 0; i < valuesList.size(); i++) {
+            Map<String, String> myValuesMap = new LinkedHashMap<String, String>();
+
+            myValuesMap.put("value", valuesList.get(i));
+            myValuesMap.put("dataType", dataTypesList.get(i));
+
+            projectMap.put(keysList.get(i), myValuesMap);
+        }
+        return projectMap;
+    }
+    
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private Map convertProjectToMap(String filename, Record project) {
+    	
+    	
+        Map projectMap = new LinkedHashMap();
+
+        List<String> keysList = new ArrayList<String>(Arrays.asList(project.getKeys().split(",")));
+        List<String> valuesList = new ArrayList<String>(Arrays.asList(project.getKeyValues().split(",")));
+        List<String> dataTypesList = new ArrayList<String>(Arrays.asList(project.getDataTypes().split(",")));
+
+        projectMap.put("id", project.getTypeId());
+        projectMap.put("file", filename);
         projectMap.put("type", project.getType());
 
         for (int i = 0; i < valuesList.size(); i++) {

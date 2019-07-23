@@ -37,23 +37,32 @@ public class ProjectController {
     	Map<String, String> response = null;
     	
     	if (version != null) {
+    		
     		response = projectService.saveProjectRecord(Integer.parseInt(version), record);
     		response.put("message", "Success! Project created");
+    		
     	} else {
+    		
     		response = new LinkedHashMap<String, String>();
-    		response.put("message", "Sorry! Please provide a version number!");
+    		response.put("message", "Error! Please provide a version number");
     	}
+    	
         return response;
     }
 
     @GetMapping
     @SuppressWarnings({"rawtypes"})
-    public List getAllProjects(@RequestParam(required = false) String version) {
+    public List getAllProjects(@RequestParam(required = false) String version, @RequestParam(required = false) String filename) {
     	List myList = null;
     	
-    	if (version != null) {
+    	if (version != null && filename == null) {
+    		
     		myList = projectService.findAllProjects(Integer.parseInt(version));
+    	} else if (version == null && filename != null) {
+    		
+    		myList = projectService.findAllProjects(filename);
     	} else {
+    		
     		myList = projectService.findAllProjects();
     	}
         return myList;
