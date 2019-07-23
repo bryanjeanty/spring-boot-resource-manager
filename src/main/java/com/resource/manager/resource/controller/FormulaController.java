@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/auth/formulas")
+@RequestMapping("/api/v2/auth/formulas")
  public class FormulaController{
  private final FormulaService formulaService;
 
