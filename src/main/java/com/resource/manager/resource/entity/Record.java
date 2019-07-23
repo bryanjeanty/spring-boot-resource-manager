@@ -41,8 +41,8 @@ public class Record implements Serializable {
     @Column(name = "data_types")
     private String dataTypes;
 
-    @JsonProperty("version")
-    private int version;
+    /*@JsonProperty("version")
+    private int version;*/
 
     @JsonProperty("editable")
     private boolean editable;
@@ -78,9 +78,9 @@ public class Record implements Serializable {
         return dataTypes;
     }
 
-    public int getVersion() {
+    /*public int getVersion() {
         return version;
-    }
+    }*/
 
     public boolean getEditable() {
         return editable;
@@ -110,9 +110,9 @@ public class Record implements Serializable {
         this.dataTypes = dataTypes;
     }
 
-    public void setVersion(int version) {
+    /*public void setVersion(int version) {
         this.version = version;
-    }
+    }*/
 
     public void setEditable(boolean editable) {
         this.editable = editable;

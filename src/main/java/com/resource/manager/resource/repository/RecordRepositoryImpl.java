@@ -106,7 +106,7 @@ public class RecordRepositoryImpl implements RecordCustomMethods {
             for (Object[] recordItem : recordList) {
                 if (!(((String) recordItem[0]).equals(record.getType()))) {
 
-                    updateQuery += " type = '" + record.getType() + "',";
+                    updateQuery += " type = '" + record.getType() + "'";
 
                 }
                 if (!(((String) recordItem[1]).equals(record.getKeys()))) {
@@ -114,7 +114,7 @@ public class RecordRepositoryImpl implements RecordCustomMethods {
                 		updateQuery += ",";
                 	}
 
-                    updateQuery += " keys = '" + record.getKeys() + "',";
+                    updateQuery += " keys = '" + record.getKeys() + "'";
 
                 }
                 if (!(((String) recordItem[2]).equals(record.getKeyValues()))) {
@@ -122,7 +122,7 @@ public class RecordRepositoryImpl implements RecordCustomMethods {
                 		updateQuery += ",";
                 	}
 
-                    updateQuery += " key_values = '" + record.getKeyValues() + "',";
+                    updateQuery += " key_values = '" + record.getKeyValues() + "'";
 
                 }
                 if (!(((String) recordItem[3]).equals(record.getDataTypes()))) {
@@ -197,6 +197,49 @@ public class RecordRepositoryImpl implements RecordCustomMethods {
     //////////////////////////////////////////////////////////////////////////////////
 
     @Override
+    public List<Record> findAllProjects(int version) {
+        String selectQuery = "SELECT type, type_id, keys, key_values, data_types FROM record INNER JOIN project ON record.type_id = project.id WHERE record.type = 'project' AND project.version = '" + version + "'";
+
+        List<String> typeArray = new ArrayList<String>();
+        List<Integer> typeIdArray = new ArrayList<Integer>();
+        List<String> keysArray = new ArrayList<String>();
+        List<String> keyValuesArray = new ArrayList<String>();
+        List<String> dataTypesArray = new ArrayList<String>();
+
+        List<Record> projects = new ArrayList<Record>();
+
+        try {
+
+            @SuppressWarnings("unchecked")
+            List<Object[]> records = entityManager.createNativeQuery(selectQuery).getResultList();
+
+            for (Object[] record : records) {
+                typeArray.add((String) record[0]);
+                typeIdArray.add((Integer) record[1]);
+                keysArray.add((String) record[2]);
+                keyValuesArray.add((String) record[3]);
+                dataTypesArray.add((String) record[4]);
+            }
+
+            for (int i = 0; i < typeArray.size(); i++) {
+                Record record = new Record();
+
+                record.setType(typeArray.get(i));
+                record.setTypeId(typeIdArray.get(i));
+                record.setKeys(keysArray.get(i));
+                record.setKeyValues(keyValuesArray.get(i));
+                record.setDataTypes(dataTypesArray.get(i));
+
+                projects.add(record);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return projects;
+    }
+    
+    @Override
     public List<Record> findAllProjects() {
         String selectQuery = "SELECT type, type_id, keys, key_values, data_types FROM record WHERE type = 'project'";
 
@@ -243,7 +286,7 @@ public class RecordRepositoryImpl implements RecordCustomMethods {
     public Record findProjectById(int projectId) {
 
         String selectQuery = "SELECT type, type_id, keys, key_values, data_types FROM record WHERE type = 'project' AND type_id = '"
-                + projectId + "'";
+                + projectId + "'" ;
 
         Record project = new Record();
 
@@ -278,21 +321,21 @@ public class RecordRepositoryImpl implements RecordCustomMethods {
 
             for (Object[] recordItem : recordList) {
                 if (!(((String) recordItem[0]).equals(record.getType()))) {
-                    updateQuery += " type = '" + record.getType() + "',";
+                    updateQuery += " type = '" + record.getType() + "'";
                 }
 
                 if (!(((String) recordItem[1]).equals(record.getKeys()))) {
                 	if (updateQuery.contains("type")) {
                 		updateQuery += ",";
                 	}
-                    updateQuery += " keys = '" + record.getKeys() + "',";
+                    updateQuery += " keys = '" + record.getKeys() + "'";
                 }
 
                 if (!(((String) recordItem[2]).equals(record.getKeyValues()))) {
                 	if (updateQuery.contains("keys") || updateQuery.contains("type")) {
                 		updateQuery += ",";
                 	}
-                    updateQuery += " key_values = '" + record.getKeyValues() + "',";
+                    updateQuery += " key_values = '" + record.getKeyValues() + "'";
                 }
 
                 if (!(((String) recordItem[3]).equals(record.getDataTypes()))) {

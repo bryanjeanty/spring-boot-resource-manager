@@ -19,8 +19,8 @@ public class Project implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "VersionNumber", length = 50, nullable = false, unique = true)
-    private int versionNumber;
+    @Column(name = "version", nullable = false)
+    private int version;
 
     public Project() {}
 
@@ -28,11 +28,11 @@ public class Project implements Serializable {
         return id;
     }
 
-    public int getVersionNumber() {
-        return versionNumber;
+    public int getVersion() {
+        return version;
     }
 
-    public void setVersionNumber(int versionNumber) {
-        this.versionNumber = versionNumber;
+    public void setVersion(int version) {
+        this.version = version;
     }
 }
