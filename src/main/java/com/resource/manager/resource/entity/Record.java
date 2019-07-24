@@ -41,14 +41,8 @@ public class Record implements Serializable {
     @Column(name = "data_types")
     private String dataTypes;
 
-    @JsonProperty("version")
-    private int version;
-
     @JsonProperty("editable")
     private boolean editable;
-
-    @Column(name = "encrypted_filename")
-    private String encryptedFilename;
 
     public Record() {
         super();
@@ -78,16 +72,8 @@ public class Record implements Serializable {
         return dataTypes;
     }
 
-    public int getVersion() {
-        return version;
-    }
-
     public boolean getEditable() {
         return editable;
-    }
-
-    public String getEncryptedFilename() {
-        return encryptedFilename;
     }
 
     public void setType(String type) {
@@ -110,15 +96,7 @@ public class Record implements Serializable {
         this.dataTypes = dataTypes;
     }
 
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
     public void setEditable(boolean editable) {
         this.editable = editable;
-    }
-
-    public void setEncryptedFilename(String encryptedFilename) {
-        this.encryptedFilename = encryptedFilename;
     }
 }

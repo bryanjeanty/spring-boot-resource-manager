@@ -58,8 +58,8 @@ public class UploadServiceImpl implements UploadService {
 		String colKeys = "";
 		String fileLine = "";
 
-		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-		String encryptedFilename = filename + "#" + timeStamp;
+		/*String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+		String encryptedFilename = filename + "#" + timeStamp;*/
 
 		try {
 
@@ -81,6 +81,7 @@ public class UploadServiceImpl implements UploadService {
 
 			while ((fileLine = myReader.readLine()) != null) {
 				Project newCsvProject = projectRepository.save(new Project());
+				newCsvProject.setFilename(filename);
 
 				Record newCsvProjectRecord = new Record();
 				newCsvProjectRecord.setType("project");
@@ -101,7 +102,6 @@ public class UploadServiceImpl implements UploadService {
 				}
 
 				newCsvProjectRecord.setDataTypes(String.join(",", dataTypesList));
-				newCsvProjectRecord.setEncryptedFilename(encryptedFilename);
 				recordRepository.save(newCsvProjectRecord);
 
 				myList.add(newCsvProjectRecord);
@@ -114,14 +114,5 @@ public class UploadServiceImpl implements UploadService {
 		}
 
 		return myList;
-	}
-
-	@Override
-	public List<Record> getFileRecords(String filename) {
-		return null;
-	}
-
-	@Override
-	public void deleteFileRecords(String filename) {
 	}
 }

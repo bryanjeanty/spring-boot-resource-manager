@@ -10,6 +10,7 @@ import com.resource.manager.resource.entity.Record;
 import com.resource.manager.resource.entity.Resource;
 import com.resource.manager.resource.repository.RecordRepository;
 import com.resource.manager.resource.repository.ResourceRepository;
+import com.resource.manager.resource.exception.ResourceNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,8 +61,13 @@ public class ResourceService {
 
     @SuppressWarnings({"rawtypes"})
     public Map updateResourceById(int resourceId, Record record) {
-        Record updatedResource = recordRepository.updateResourceById(resourceId, record);
-        return convertResourceToMap(updatedResource);
+    	Resource updatedResource = resourceRepository
+    									.findById(resourceId)
+    									.orElseThrow(() -> new ResourceNotFoundException(resourceId));
+    	resourceRepository.save(updatedResource);
+    	
+        Record updatedRecord = recordRepository.updateResourceById(updatedResource.getId(), record);
+        return convertResourceToMap(updatedRecord);
     }
 
     @SuppressWarnings({"rawtypes"})

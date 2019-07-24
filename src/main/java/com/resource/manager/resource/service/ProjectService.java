@@ -30,54 +30,91 @@ public class ProjectService {
     }
 
     @SuppressWarnings({"rawtypes"})
-    public Map saveProjectRecord(Record record) {
+    public Map saveProjectRecord(int version, Record record) {
         Project project = new Project();
-        project.setVersionNumber(record.getVersion());
+        project.setVersion(version);
         Project newProject = projectRepository.save(project);
 
         record.setTypeId(newProject.getId());
         Record newRecord = recordRepository.save(record);
 
-        return convertProjectToMap(newRecord);
+        return convertProjectToMap(version, newRecord);
     }
-
+    
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public List findAllProjects() {
-        List<Record> projects = recordRepository.findAllProjects();
-
+    public List findAllProjects(int version) {
+        List<Record> projects = recordRepository.findAllProjects(version);
+        	
         List myArr = new ArrayList();
 
         for (Record project : projects) {
-            myArr.add(convertProjectToMap(project));
+            myArr.add(convertProjectToMap(version, project));
+        }
+        return myArr;
+    }
+    
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public List findAllProjects(String filename) {
+        List<Record> projects = recordRepository.findAllProjects(filename);
+        	
+        List myArr = new ArrayList();
+
+        for (Record project : projects) {
+            myArr.add(convertProjectToMap(filename, project));
+        }
+        return myArr;
+    }
+    
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public List findAllProjects() {    	
+    	List<Project> projects = projectRepository.findAll();
+        List<Record> projectRecords = recordRepository.findAllProjects();
+        	
+        List myArr = new ArrayList();
+
+        for (int i = 0; i < projectRecords.size(); i++) {
+        	if (projects.get(i).getVersion() == 0) {
+        		myArr.add(convertProjectToMap(projects.get(i).getFilename(), projectRecords.get(i)));
+        	} else {
+        		myArr.add(convertProjectToMap(projects.get(i).getVersion(), projectRecords.get(i)));
+        	}
         }
         return myArr;
     }
 
     @SuppressWarnings({"rawtypes"})
     public Map findProjectById(int projectId) {
-        Record project = recordRepository.findProjectById(projectId);
-        return convertProjectToMap(project);
+    	Project foundProject = projectRepository
+    								.findById(projectId)
+    								.orElseThrow(() -> new ProjectNotFoundException(projectId));
+    	
+        Record foundRecord = recordRepository.findProjectById(projectId);
+        return convertProjectToMap(foundProject.getVersion(), foundRecord);
     }
 
     @SuppressWarnings({"rawtypes"})
     public Map updateProjectById(int projectId, Record record) {
-    	Project updatedProject = projectRepository.findById(projectId)
-    											.orElseThrow(() -> new ProjectNotFoundException(projectId));
-    	updatedProject.setVersionNumber(record.getVersion());
+    	Project updatedProject = projectRepository
+    									.findById(projectId)
+    									.orElseThrow(() -> new ProjectNotFoundException(projectId));
     	projectRepository.save(updatedProject);
     	
         Record updatedRecord = recordRepository.updateProjectById(updatedProject.getId(), record);
-        return convertProjectToMap(updatedRecord);
+        return convertProjectToMap(updatedProject.getVersion(), updatedRecord);
     }
 
     @SuppressWarnings({"rawtypes"})
     public Map deleteProjectById(int projectId) {
-        Record deletedProject = recordRepository.deleteProjectById(projectId);
-        return convertProjectToMap(deletedProject);
+    	Project deletedProject = projectRepository
+    									.findById(projectId)
+    									.orElseThrow(() -> new ProjectNotFoundException(projectId));
+    	
+        Record deletedRecord = recordRepository.deleteProjectById(projectId);
+        return convertProjectToMap(deletedProject.getVersion(), deletedRecord);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private Map convertProjectToMap(Record project) {
+    private Map convertProjectToMap(int version, Record project) {
     	
     	
         Map projectMap = new LinkedHashMap();
@@ -87,6 +124,32 @@ public class ProjectService {
         List<String> dataTypesList = new ArrayList<String>(Arrays.asList(project.getDataTypes().split(",")));
 
         projectMap.put("id", project.getTypeId());
+        projectMap.put("version", version);
+        projectMap.put("type", project.getType());
+
+        for (int i = 0; i < valuesList.size(); i++) {
+            Map<String, String> myValuesMap = new LinkedHashMap<String, String>();
+
+            myValuesMap.put("value", valuesList.get(i));
+            myValuesMap.put("dataType", dataTypesList.get(i));
+
+            projectMap.put(keysList.get(i), myValuesMap);
+        }
+        return projectMap;
+    }
+    
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private Map convertProjectToMap(String filename, Record project) {
+    	
+    	
+        Map projectMap = new LinkedHashMap();
+
+        List<String> keysList = new ArrayList<String>(Arrays.asList(project.getKeys().split(",")));
+        List<String> valuesList = new ArrayList<String>(Arrays.asList(project.getKeyValues().split(",")));
+        List<String> dataTypesList = new ArrayList<String>(Arrays.asList(project.getDataTypes().split(",")));
+
+        projectMap.put("id", project.getTypeId());
+        projectMap.put("file", filename);
         projectMap.put("type", project.getType());
 
         for (int i = 0; i < valuesList.size(); i++) {

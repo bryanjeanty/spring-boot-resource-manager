@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.servlet.HandlerMapping;
 
 @RestController
-@RequestMapping("/api/v1/login")
+@RequestMapping("/api/v2/login")
 public class LoginController {
 	
     @GetMapping
