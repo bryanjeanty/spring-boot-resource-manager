@@ -1,9 +1,6 @@
 package com.resource.manager.resource.controller;
 
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.LinkedHashMap;
 
 import com.resource.manager.resource.entity.Record;
 import com.resource.manager.resource.service.UploadService;
@@ -35,14 +32,3 @@ public class UploadController {
 		return new ResponseEntity<List<Record>>(fileRecordsList, HttpStatus.OK);
 	}
 }
-
-
-
-
-
-
-
-
-
-
-

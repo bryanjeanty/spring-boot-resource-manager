@@ -59,17 +59,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // authorization requests configuration
                 // allow any users to access only login and home pages
                 .authorizeRequests().antMatchers("/").permitAll()
-                .antMatchers("/api/v1/login**").permitAll()
-                .antMatchers("/api/v1/register**").permitAll()
+                .antMatchers("/api/v2/login**").permitAll()
+                .antMatchers("/api/v2/register**").permitAll()
 
                 // only authenticated users can access other routes in the application
-                .antMatchers("/api/v1/auth/**").authenticated()
+                .antMatchers("/api/v2/auth/**").authenticated()
 
                 // all other url requests need to be authenticated
                 .anyRequest().authenticated().and()
                 
                 //custom login
-                .formLogin().loginPage("/api/v1/login").permitAll().and()
+                .formLogin().loginPage("/api/v2/login").permitAll().and()
 
                 // add JWT filters (1. authentication, 2. authorization) to validate
                 // tokens with every request
@@ -77,7 +77,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), this.accountRepository))
 
                 // redirect the user to the login page if they fail to authenticate
-                .exceptionHandling().accessDeniedPage("/api/v1/login");
+                .exceptionHandling().accessDeniedPage("/api/v2/login");
     }
     
 	@Bean

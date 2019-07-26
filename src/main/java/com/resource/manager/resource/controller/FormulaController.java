@@ -55,9 +55,4 @@ import org.springframework.web.bind.annotation.RestController;
      public @ResponseBody Map deleteFormulaById(@PathVariable("id")int formulaId){
          return formulaService.deleteFormulaById(formulaId);
      }
-
-  
-
-
  }
- 

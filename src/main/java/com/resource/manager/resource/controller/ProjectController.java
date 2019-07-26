@@ -32,7 +32,7 @@ public class ProjectController {
     }
 
     @PostMapping
-    @SuppressWarnings({"rawtypes"})
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public @ResponseBody Map createProjectRecord(@RequestParam String version, @Valid @RequestBody Record record) {
     	Map<String, String> response = null;
     	
